@@ -137,9 +137,23 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns true if it is our turn to make a move in the game
    * Returns false if it is not our turn, or if the game is not in progress
    */
+
   get isOurTurn(): boolean {
-    //const ourPlayer = this._townController.ourPlayer;
-    return true; //TODO
+    // get the id of our player
+    const ourPlayersId = this._townController.ourPlayer.id;
+    const game = this._model.game;
+    if (game === undefined) {
+      return false;
+    }
+    const gamePieceToBePlayed =
+      game.state.moves[game.state.moves.length - 1].gamePiece === 'X' ? 'O' : 'X';
+
+    if (gamePieceToBePlayed === 'X' && ourPlayersId === game?.state.x) {
+      return true;
+    } else if (gamePieceToBePlayed === 'O' && ourPlayersId === game.state.o) {
+      return true;
+    }
+    return false;
   }
 
   /**
