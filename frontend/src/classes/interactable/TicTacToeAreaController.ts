@@ -107,10 +107,16 @@ export default class TicTacToeAreaController extends GameAreaController<
    */
   get winner(): PlayerController | undefined {
     const game = this._model.game;
-    if (game === undefined) {
+    if (
+      game === undefined ||
+      this._model.game?.state.status === 'IN_PROGRESS' ||
+      this._model.game?.state.status === 'WAITING_TO_START'
+    ) {
       return undefined;
     } else {
-      // check that there are two players in the game, and then check game winner equals one of the players ids
+      return this.players[0].id === this._model.game?.state.winner
+        ? this.players[0]
+        : this.players[1];
     }
   }
 
@@ -119,7 +125,12 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns undefined if the game is not in progress
    */
   get whoseTurn(): PlayerController | undefined {
-    return undefined; //TODO
+    /*  const game = this._model.game;
+    if (game === undefined || game.state.status !== 'IN_PROGRESS') {
+      return undefined;
+    }
+    const lastPlayerWhoWentGamePiece = game.state.moves[game.state.moves.length - 1].gamePiece; */
+    return undefined;
   }
 
   /**
@@ -127,6 +138,7 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns false if it is not our turn, or if the game is not in progress
    */
   get isOurTurn(): boolean {
+    //const ourPlayer = this._townController.ourPlayer;
     return true; //TODO
   }
 
@@ -134,7 +146,14 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns true if the current player is a player in this game
    */
   get isPlayer(): boolean {
-    return false; //TODO
+    let inGame = false;
+    if (this.players.length > 0) {
+      inGame = this._townController.ourPlayer.id === this.players[0].id;
+    }
+    if (this.players.length > 1) {
+      inGame = inGame || this._townController.ourPlayer.id === this.players[1].id;
+    }
+    return inGame;
   }
 
   /**
@@ -163,7 +182,7 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns true if the game is in progress
    */
   public isActive(): boolean {
-    return false; //TODO
+    return this.status === 'IN_PROGRESS'; //TODO
   }
 
   /**
