@@ -48,7 +48,23 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns the player with the 'X' game piece, if there is one, or undefined otherwise
    */
   get x(): PlayerController | undefined {
-    return undefined; //TODO
+    let player: PlayerController;
+    if (this._model.game === undefined || this._model.game.state.x === undefined) {
+      return undefined;
+    }
+    if (this.players.length > 0) {
+      player = this.players[0];
+      if (player.toPlayerModel().id === this._model.game?.state.x) {
+        return player;
+      }
+    }
+    if (this.players.length > 1) {
+      player = this.players[1];
+      if (player.toPlayerModel().id === this._model.game.state.x) {
+        return player;
+      }
+    }
+    return undefined;
   }
 
   /**
