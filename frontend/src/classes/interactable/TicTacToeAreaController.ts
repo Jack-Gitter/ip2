@@ -71,21 +71,47 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns the player with the 'O' game piece, if there is one, or undefined otherwise
    */
   get o(): PlayerController | undefined {
-    return undefined; //TODO
+    let player: PlayerController;
+    if (this._model.game === undefined || this._model.game.state.x === undefined) {
+      return undefined;
+    }
+    if (this.players.length > 0) {
+      player = this.players[0];
+      if (player.toPlayerModel().id === this._model.game?.state.o) {
+        return player;
+      }
+    }
+    if (this.players.length > 1) {
+      player = this.players[1];
+      if (player.toPlayerModel().id === this._model.game.state.o) {
+        return player;
+      }
+    }
+    return undefined;
   }
 
   /**
    * Returns the number of moves that have been made in the game
    */
   get moveCount(): number {
-    return 0; //TODO
+    const game = this._model.game;
+    if (game === undefined) {
+      return 0;
+    } else {
+      return game.state.moves.length;
+    }
   }
 
   /**
    * Returns the winner of the game, if there is one
    */
   get winner(): PlayerController | undefined {
-    return undefined; //TODO
+    const game = this._model.game;
+    if (game === undefined) {
+      return undefined;
+    } else {
+      // check that there are two players in the game, and then check game winner equals one of the players ids
+    }
   }
 
   /**
@@ -125,7 +151,12 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Defaults to 'WAITING_TO_START' if the game is not in progress
    */
   get status(): GameStatus {
-    return 'WAITING_TO_START'; //TODO
+    const game = this._model.game;
+    if (game === undefined || this._model.game?.state.status === undefined) {
+      return 'WAITING_TO_START';
+    } else {
+      return this._model.game?.state.status;
+    }
   }
 
   /**
