@@ -142,10 +142,9 @@ export default class TicTacToeAreaController extends GameAreaController<
         (gamePieceToBePlayed === 'X' && this.players[1].id === game.state.o)
       ) {
         return this.players[1];
-      }
-    } else {
+      } 
       return undefined;
-    }
+    
   }
 
   /**
