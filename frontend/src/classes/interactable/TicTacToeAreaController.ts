@@ -242,20 +242,17 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (this._model.game === undefined || oldGame === undefined) {
       return;
     }
-    const moves = this._model.game.state.moves;
-    if (moves.length !== oldGame.state?.moves.length) {
+    const newMoves = this._model.game.state.moves;
+    const oldMoves = oldGame.state?.moves ?? [];
+    if (newMoves.length !== oldMoves.length) {
       this.emit('boardChanged', this.board);
-      if (moves !== undefined && moves[moves.length - 1].gamePiece === 'X') {
-        if (this._townController.ourPlayer.id === this._model.game.state.x) {
-          this.emit('turnChanged', true);
-        }
-      } else if (moves !== undefined && moves[moves.length - 1].gamePiece === 'O') {
-        if (this._townController.ourPlayer.id === this._model.game.state.o) {
-          this.emit('turnChanged', true);
-        }
-      } else {
-        this.emit('turnChanged', false);
-      }
+      const ourPlayer = this._townController.ourPlayer;
+      const ourTurn =
+        (newMoves[newMoves.length - 1].gamePiece === 'X' &&
+          ourPlayer.id === this._model.game.state.o) ||
+        (newMoves[newMoves.length - 1].gamePiece === 'O' &&
+          ourPlayer.id === this._model.game.state.x);
+      this.emit('turnChanged', ourTurn);
     }
   }
 
@@ -275,6 +272,7 @@ export default class TicTacToeAreaController extends GameAreaController<
       throw new Error(NO_GAME_IN_PROGRESS_ERROR);
     }
 
+    // have checked that game status is in progress, so whoseTurn is never undefined
     const gamePiece = this.whoseTurn?.id === this._model.game?.state.x ? 'X' : 'O';
     const move: TicTacToeMove = {
       gamePiece: gamePiece,
