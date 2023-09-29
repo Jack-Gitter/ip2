@@ -254,21 +254,22 @@ export default class TicTacToeAreaController extends GameAreaController<
     const oldGame = { ...this._model.game };
     super._updateFrom(newModel);
     if (this._model.game === undefined || oldGame === undefined) {
-      return 
+      return;
     }
     if (this._model.game?.state.moves.length !== oldGame.state?.moves.length)
       this.emit('boardChanged', this.board);
-      if (this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'X') {
-        if (this._townController.ourPlayer.id === this._model.game.state.x) {
-          this.emit('turnChanged', true)
-        }
-      } else if (this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'O') {
-        if (this._townController.ourPlayer.id === this._model.game.state.o) {
-          this.emit('turnChanged', true)
-        }
-      } else {
-        this.emit('turnChanged', false)
+    if (this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'X') {
+      if (this._townController.ourPlayer.id === this._model.game.state.x) {
+        this.emit('turnChanged', true);
       }
+    } else if (
+      this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'O'
+    ) {
+      if (this._townController.ourPlayer.id === this._model.game.state.o) {
+        this.emit('turnChanged', true);
+      }
+    } else {
+      this.emit('turnChanged', false);
     }
   }
 
