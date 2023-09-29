@@ -1,6 +1,8 @@
 import {
   GameArea,
+  GameMoveCommand,
   GameStatus,
+  InteractableCommand,
   TicTacToeGameState,
   TicTacToeGridPosition,
   TicTacToeMove,
@@ -52,6 +54,7 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns the player with the 'X' game piece, if there is one, or undefined otherwise
    */
   get x(): PlayerController | undefined {
+    console.log(this.players);
     if (this._model.game === undefined || this._model.game.state.x === undefined) {
       return undefined;
     }
@@ -68,21 +71,14 @@ export default class TicTacToeAreaController extends GameAreaController<
    * Returns the player with the 'O' game piece, if there is one, or undefined otherwise
    */
   get o(): PlayerController | undefined {
-    let player: PlayerController;
-    if (this._model.game === undefined || this._model.game.state.x === undefined) {
+    if (this._model.game === undefined || this._model.game.state.o === undefined) {
       return undefined;
     }
-    if (this.players.length > 0) {
-      player = this.players[0];
-      if (player.toPlayerModel().id === this._model.game?.state.o) {
-        return player;
-      }
+    if (this.players[0] !== undefined && this.players[0].id === this._model.game?.state.o) {
+      return this.players[0];
     }
-    if (this.players.length > 1) {
-      player = this.players[1];
-      if (player.toPlayerModel().id === this._model.game.state.o) {
-        return player;
-      }
+    if (this.players[1] !== undefined && this.players[1].id === this._model.game.state.o) {
+      return this.players[1];
     }
     return undefined;
   }
@@ -273,10 +269,22 @@ export default class TicTacToeAreaController extends GameAreaController<
    * @param col Column of the move
    */
   public async makeMove(row: TicTacToeGridPosition, col: TicTacToeGridPosition) {
-    if (row || col) {
-      //Delete this, it's just here to make the linter happy until you implement this method
-      return;
+    if (this._model.game !== undefined && this._model.game?.state.status !== 'IN_PROGRESS') {
+      throw new Error(NO_GAME_IN_PROGRESS_ERROR);
     }
-    return; //TODO
+
+    const gamePiece = this.whoseTurn?.id === this._model.game?.state.x ? 'X' : 'O';
+    const move: TicTacToeMove = {
+      gamePiece: gamePiece,
+      row: row,
+      col: col,
+    };
+
+    const command: GameMoveCommand<TicTacToeMove> = {
+      type: 'GameMove',
+      gameID: this._instanceID as string,
+      move: move,
+    };
+    this._townController.sendInteractableCommand('GameMove', command);
   }
 }
