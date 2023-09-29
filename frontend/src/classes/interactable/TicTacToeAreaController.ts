@@ -144,10 +144,7 @@ export default class TicTacToeAreaController extends GameAreaController<
   get isOurTurn(): boolean {
     const ourPlayer: PlayerController = this._townController.ourPlayer;
     const playerWhosTurnItIs: PlayerController | undefined = this.whoseTurn;
-    if (playerWhosTurnItIs === undefined) {
-      return false;
-    }
-    return ourPlayer === playerWhosTurnItIs;
+    return playerWhosTurnItIs !== undefined && ourPlayer === playerWhosTurnItIs;
     /* const game = this._model.game;
     if (game === undefined || game.state.status !== 'IN_PROGRESS') {
       return false;
@@ -200,7 +197,7 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (currentPlayer.id === game.state.o) {
       return 'O';
     }
-    throw new Error(PLAYER_NOT_IN_GAME_ERROR); //TODO
+    throw new Error(PLAYER_NOT_IN_GAME_ERROR);
   }
 
   /**
@@ -225,7 +222,6 @@ export default class TicTacToeAreaController extends GameAreaController<
       return false;
     }
     return game.state.status === 'IN_PROGRESS';
-    //return this.status === 'IN_PROGRESS'; //TODO
   }
 
   /**
