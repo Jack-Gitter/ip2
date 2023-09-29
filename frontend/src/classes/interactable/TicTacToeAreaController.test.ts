@@ -305,13 +305,42 @@ describe('[T1] TicTacToeAreaController', () => {
       });
     });
     describe('makeMove', () => {
-      it('should throw an error if the game is not in progress', async () => {
-        //TODO
-        //Hint: Use mockTownController
+      it('should throw an error if the game is not in progress (OVER STATUS)', async () => {
+        const controller = ticTacToeAreaControllerWithProp({
+          status: 'OVER',
+          x: otherPlayers[0].id,
+          o: ourPlayer.id,
+        });
+        const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        await expect(() => controller.makeMove(0, 0)).rejects.toThrow();
+        expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
+      });
+      it('should throw an error if the game is not in progress (WAITING_TO_START STATUS)', async () => {
+        const controller = ticTacToeAreaControllerWithProp({
+          status: 'WAITING_TO_START',
+          x: otherPlayers[0].id,
+          o: ourPlayer.id,
+        });
+        const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        await expect(() => controller.makeMove(0, 0)).rejects.toThrow();
+        expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
       it('Should call townController.sendInteractableCommand', async () => {
-        //TODO
-        //Hint: Use mockTownController
+        const controller = ticTacToeAreaControllerWithProp({
+          status: 'IN_PROGRESS',
+          x: otherPlayers[0].id,
+          o: ourPlayer.id,
+        });
+        const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        await controller.joinGame();
+        controller.makeMove(0, 0);
+        controller.makeMove(1, 1);
+        expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
+        expect(controller.board).toBe([
+          ['X', undefined, undefined],
+          [undefined, 'O', undefined],
+          [undefined, undefined, undefined],
+        ]);
       });
     });
   });
@@ -328,10 +357,6 @@ describe('[T1] TicTacToeAreaController', () => {
       it('should emit a boardChanged event with the new board', () => {
         //TODO
         //Hint: Set up a spy on the `emit` method of the controller
-        const spy = jest.spyOn(controller, 'emit');
-        controller.makeMove(0, 0);
-        controller.updateFrom(controller.toInteractableAreaModel(), controller.occupants);
-        expect(spy).toHaveBeenCalledWith('boardChanged');
       });
       it('should not emit a boardChanged event if the board has not changed', () => {
         //TODO

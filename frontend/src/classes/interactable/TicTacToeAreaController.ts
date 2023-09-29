@@ -57,11 +57,17 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (this._model.game === undefined || this._model.game.state.x === undefined) {
       return undefined;
     }
-    for (const player of this.players) {
+    /* for (const player of this.players) {
       if (player !== undefined && player.id === this._model.game.state.x) {
         return player;
       }
+    }*/
+    for (const observer of this.observers) {
+      if (observer !== undefined && observer.id === this._model.game.state.x) {
+        return observer;
+      }
     }
+
     return undefined;
   }
 
@@ -72,9 +78,14 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (this._model.game === undefined || this._model.game.state.o === undefined) {
       return undefined;
     }
-    for (const player of this.players) {
+    /* for (const player of this.players) {
       if (player !== undefined && player.id === this._model.game.state.o) {
         return player;
+      }
+    } */
+    for (const observer of this.observers) {
+      if (observer !== undefined && observer.id === this._model.game.state.o) {
+        return observer;
       }
     }
     return undefined;
@@ -100,9 +111,14 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (game === undefined || this._model.game?.state.status !== 'OVER') {
       return undefined;
     }
-    for (const player of this.players) {
+    /* for (const player of this.players) {
       if (player !== undefined && player.id === this._model.game.state.winner) {
         return player;
+      }
+    } */
+    for (const observer of this.observers) {
+      if (observer !== undefined && observer.id === this._model.game.state.winner) {
+        return observer;
       }
     }
     return undefined;
@@ -123,13 +139,23 @@ export default class TicTacToeAreaController extends GameAreaController<
         : game.state.moves[game.state.moves.length - 1].gamePiece === 'X'
         ? 'O'
         : 'X';
-    for (const player of this.players) {
+    /* for (const player of this.players) {
       if (player !== undefined) {
         if (
           (gamePieceToBePlayed === 'X' && player.id === game.state.x) ||
           (gamePieceToBePlayed === 'O' && player.id === game.state.o)
         ) {
           return player;
+        }
+      }
+    }*/
+    for (const observer of this.observers) {
+      if (observer !== undefined) {
+        if (
+          (gamePieceToBePlayed === 'X' && observer.id === game.state.x) ||
+          (gamePieceToBePlayed === 'O' && observer.id === game.state.o)
+        ) {
+          return observer;
         }
       }
     }
@@ -268,7 +294,11 @@ export default class TicTacToeAreaController extends GameAreaController<
    * @param col Column of the move
    */
   public async makeMove(row: TicTacToeGridPosition, col: TicTacToeGridPosition) {
-    if (this._model.game !== undefined && this._model.game?.state.status !== 'IN_PROGRESS') {
+    if (
+      this._model.game === undefined ||
+      this._instanceID === undefined ||
+      this._model.game?.state.status !== 'IN_PROGRESS'
+    ) {
       throw new Error(NO_GAME_IN_PROGRESS_ERROR);
     }
 
@@ -282,7 +312,7 @@ export default class TicTacToeAreaController extends GameAreaController<
 
     const command: GameMoveCommand<TicTacToeMove> = {
       type: 'GameMove',
-      gameID: this._instanceID as string,
+      gameID: this._instanceID,
       move: move,
     };
     await this._townController.sendInteractableCommand('GameMove', command);
