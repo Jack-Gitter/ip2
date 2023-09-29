@@ -251,10 +251,25 @@ export default class TicTacToeAreaController extends GameAreaController<
    * If the turn has not changed, does not emit the event.
    */
   protected _updateFrom(newModel: GameArea<TicTacToeGameState>): void {
+    const oldGame = { ...this._model.game };
     super._updateFrom(newModel);
-    // this.mit('boardChanged', this.board);
-    // check for board change and emit event if necessary
-    // check for turn change
+    if (this._model.game === undefined || oldGame === undefined) {
+      return 
+    }
+    if (this._model.game?.state.moves.length !== oldGame.state?.moves.length)
+      this.emit('boardChanged', this.board);
+      if (this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'X') {
+        if (this._townController.ourPlayer.id === this._model.game.state.x) {
+          this.emit('turnChanged', true)
+        }
+      } else if (this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'O') {
+        if (this._townController.ourPlayer.id === this._model.game.state.o) {
+          this.emit('turnChanged', true)
+        }
+      } else {
+        this.emit('turnChanged', false)
+      }
+    }
   }
 
   /**
