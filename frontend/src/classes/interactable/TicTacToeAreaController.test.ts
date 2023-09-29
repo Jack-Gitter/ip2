@@ -34,6 +34,7 @@ describe('[T1] TicTacToeAreaController', () => {
     get: () => [ourPlayer, ...otherPlayers],
   });
 
+  //Object.defineProperty(mockTownController, 'getPlayer')
   function ticTacToeAreaControllerWithProp({
     _id,
     history,
