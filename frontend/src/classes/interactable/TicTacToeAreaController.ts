@@ -256,20 +256,20 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (this._model.game === undefined || oldGame === undefined) {
       return;
     }
-    if (this._model.game?.state.moves.length !== oldGame.state?.moves.length)
+    const moves = this._model.game.state.moves;
+    if (moves.length !== oldGame.state?.moves.length) {
       this.emit('boardChanged', this.board);
-    if (this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'X') {
-      if (this._townController.ourPlayer.id === this._model.game.state.x) {
-        this.emit('turnChanged', true);
+      if (moves !== undefined && moves[moves.length - 1].gamePiece === 'X') {
+        if (this._townController.ourPlayer.id === this._model.game.state.x) {
+          this.emit('turnChanged', true);
+        }
+      } else if (moves !== undefined && moves[moves.length - 1].gamePiece === 'O') {
+        if (this._townController.ourPlayer.id === this._model.game.state.o) {
+          this.emit('turnChanged', true);
+        }
+      } else {
+        this.emit('turnChanged', false);
       }
-    } else if (
-      this._model.game.state.moves[this._model.game.state.moves.length - 1].gamePiece === 'O'
-    ) {
-      if (this._townController.ourPlayer.id === this._model.game.state.o) {
-        this.emit('turnChanged', true);
-      }
-    } else {
-      this.emit('turnChanged', false);
     }
   }
 
@@ -301,6 +301,6 @@ export default class TicTacToeAreaController extends GameAreaController<
       gameID: this._instanceID as string,
       move: move,
     };
-    this._townController.sendInteractableCommand('GameMove', command);
+    await this._townController.sendInteractableCommand('GameMove', command);
   }
 }

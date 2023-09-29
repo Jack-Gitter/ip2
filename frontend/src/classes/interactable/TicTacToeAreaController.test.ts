@@ -328,6 +328,10 @@ describe('[T1] TicTacToeAreaController', () => {
       it('should emit a boardChanged event with the new board', () => {
         //TODO
         //Hint: Set up a spy on the `emit` method of the controller
+        const spy = jest.spyOn(controller, 'emit');
+        controller.makeMove(0, 0);
+        controller.updateFrom(controller.toInteractableAreaModel(), controller.occupants);
+        expect(spy).toHaveBeenCalledWith('boardChanged');
       });
       it('should not emit a boardChanged event if the board has not changed', () => {
         //TODO
