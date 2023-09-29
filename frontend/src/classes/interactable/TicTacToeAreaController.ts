@@ -47,22 +47,20 @@ export default class TicTacToeAreaController extends GameAreaController<
         ret[move.row][move.col] = move.gamePiece;
       }
     }
-    return ret; //TODO
+    return ret;
   }
 
   /**
    * Returns the player with the 'X' game piece, if there is one, or undefined otherwise
    */
   get x(): PlayerController | undefined {
-    console.log(this.players);
     if (this._model.game === undefined || this._model.game.state.x === undefined) {
       return undefined;
     }
-    if (this.players[0] !== undefined && this.players[0].id === this._model.game?.state.x) {
-      return this.players[0];
-    }
-    if (this.players[1] !== undefined && this.players[1].id === this._model.game.state.x) {
-      return this.players[1];
+    for (const player of this.players) {
+      if (player !== undefined && player.id === this._model.game.state.x) {
+        return player;
+      }
     }
     return undefined;
   }
@@ -74,11 +72,10 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (this._model.game === undefined || this._model.game.state.o === undefined) {
       return undefined;
     }
-    if (this.players[0] !== undefined && this.players[0].id === this._model.game?.state.o) {
-      return this.players[0];
-    }
-    if (this.players[1] !== undefined && this.players[1].id === this._model.game.state.o) {
-      return this.players[1];
+    for (const player of this.players) {
+      if (player !== undefined && player.id === this._model.game.state.o) {
+        return player;
+      }
     }
     return undefined;
   }
@@ -100,17 +97,15 @@ export default class TicTacToeAreaController extends GameAreaController<
    */
   get winner(): PlayerController | undefined {
     const game = this._model.game;
-    if (
-      game === undefined ||
-      this._model.game?.state.status === 'IN_PROGRESS' ||
-      this._model.game?.state.status === 'WAITING_TO_START'
-    ) {
+    if (game === undefined || this._model.game?.state.status !== 'OVER') {
       return undefined;
-    } else {
-      return this.players[0] !== undefined && this.players[0].id === this._model.game?.state.winner
-        ? this.players[0]
-        : this.players[1];
     }
+    for (const player of this.players) {
+      if (player !== undefined && player.id === this._model.game.state.winner) {
+        return player;
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -119,34 +114,23 @@ export default class TicTacToeAreaController extends GameAreaController<
    */
   get whoseTurn(): PlayerController | undefined {
     const game = this._model.game;
-    if (game === undefined) {
+    if (game === undefined || game.state.status !== 'IN_PROGRESS') {
       return undefined;
     }
-    if (game.state.status === 'IN_PROGRESS') {
-      const gamePieceToBePlayed =
-        game.state.moves.length === 0
-          ? 'X'
-          : game.state.moves[game.state.moves.length - 1].gamePiece === 'X'
-          ? 'O'
-          : 'X';
-      if (
-        (gamePieceToBePlayed === 'X' &&
-          this.players[0] !== undefined &&
-          this.players[0].id === game.state.x) ||
-        (gamePieceToBePlayed === 'O' &&
-          this.players[0] !== undefined &&
-          this.players[0].id === game.state.o)
-      ) {
-        return this.players[0];
-      } else if (
-        (gamePieceToBePlayed === 'X' &&
-          this.players[1] !== undefined &&
-          this.players[1].id === game.state.x) ||
-        (gamePieceToBePlayed === 'O' &&
-          this.players[1] !== undefined &&
-          this.players[1].id === game.state.o)
-      ) {
-        return this.players[1];
+    const gamePieceToBePlayed =
+      game.state.moves.length === 0
+        ? 'X'
+        : game.state.moves[game.state.moves.length - 1].gamePiece === 'X'
+        ? 'O'
+        : 'X';
+    for (const player of this.players) {
+      if (player !== undefined) {
+        if (
+          (gamePieceToBePlayed === 'X' && player.id === game.state.x) ||
+          (gamePieceToBePlayed === 'O' && player.id === game.state.o)
+        ) {
+          return player;
+        }
       }
     }
     return undefined;
