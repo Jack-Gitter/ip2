@@ -325,7 +325,11 @@ export default class TicTacToeAreaController extends GameAreaController<
    * @param col Column of the move
    */
   public async makeMove(row: TicTacToeGridPosition, col: TicTacToeGridPosition) {
-    if (this._model.game === undefined || this._model.game.state.status !== 'IN_PROGRESS') {
+    if (
+      this._model.game === undefined ||
+      this._model.game.state.status !== 'IN_PROGRESS' ||
+      this._instanceID === undefined
+    ) {
       throw new Error(NO_GAME_IN_PROGRESS_ERROR);
     }
 
