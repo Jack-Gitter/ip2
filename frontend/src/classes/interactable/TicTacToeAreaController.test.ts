@@ -377,9 +377,7 @@ describe('[T1] TicTacToeAreaController', () => {
         ]);
       });
       it('should not emit a boardChanged event if the board has not changed', () => {
-        const emitSpy = jest.spyOn(controller, 'emit');
-        controller.updateFrom(controller.toInteractableAreaModel(), controller.occupants);
-        //expect(emitSpy).toHaveBeenCalledWith('');
+        // when does this happen?
       });
       it('should emit a turnChanged event with true if it is our turn', () => {
         // our player is x, so make a move with x, then o, then check to see the emit
@@ -390,6 +388,37 @@ describe('[T1] TicTacToeAreaController', () => {
             gamePiece: 'X',
             row: 0 as TicTacToeGridPosition,
             col: 0 as TicTacToeGridPosition,
+          },
+          {
+            gamePiece: 'O',
+            row: 1 as TicTacToeGridPosition,
+            col: 2 as TicTacToeGridPosition,
+          },
+        ];
+        assert(model.game);
+        const newModel: GameArea<TicTacToeGameState> = {
+          ...model,
+          game: {
+            ...model.game,
+            state: {
+              ...model.game?.state,
+              moves: newMoves,
+            },
+          },
+        };
+        controller.updateFrom(newModel, controller.occupants);
+        expect(emitSpy).toBeCalledWith('turnChanged', true);
+        //TODO
+        //Hint: Set up a spy on the `emit` method of the controller
+      });
+      it('should emit a turnChanged event with false if it is not our turn', () => {
+        const model = controller.toInteractableAreaModel();
+        const emitSpy = jest.spyOn(controller, 'emit');
+        const newMoves: ReadonlyArray<TicTacToeMove> = [
+          {
+            gamePiece: 'X',
+            row: 1 as TicTacToeGridPosition,
+            col: 1 as TicTacToeGridPosition,
           },
         ];
         assert(model.game);
@@ -405,15 +434,12 @@ describe('[T1] TicTacToeAreaController', () => {
         };
         controller.updateFrom(newModel, controller.occupants);
         expect(emitSpy).toBeCalledWith('turnChanged', false);
-        //TODO
-        //Hint: Set up a spy on the `emit` method of the controller
-      });
-      it('should emit a turnChanged event with false if it is not our turn', () => {
         // our player is x, so make a move with x then check
         //TODO
         //Hint: Set up a spy on the `emit` method of the controller
       });
       it('should not emit a turnChanged event if the turn has not changed', () => {
+        // when does this happen? when the board is not updated?
         // make an invalid move or something? not sure how that works
         //TODO
         //Hint: Set up a spy on the `emit` method of the controller

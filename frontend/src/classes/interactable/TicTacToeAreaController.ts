@@ -40,10 +40,13 @@ export default class TicTacToeAreaController extends GameAreaController<
       [undefined, undefined, undefined],
       [undefined, undefined, undefined],
     ];
-    const currentBoard: ReadonlyArray<TicTacToeMove> | undefined = this._model.game?.state.moves;
-    if (currentBoard !== undefined) {
-      for (const move of currentBoard) {
-        ret[move.row][move.col] = move.gamePiece;
+    const currentGame = this._model.game;
+    if (currentGame !== undefined) {
+      const currentBoard: ReadonlyArray<TicTacToeMove> | undefined = currentGame.state.moves;
+      if (currentBoard !== undefined) {
+        for (const move of currentBoard) {
+          ret[move.row][move.col] = move.gamePiece;
+        }
       }
     }
     return ret;
@@ -107,7 +110,7 @@ export default class TicTacToeAreaController extends GameAreaController<
    */
   get winner(): PlayerController | undefined {
     const game = this._model.game;
-    if (game === undefined || this._model.game?.state.status !== 'OVER') {
+    if (game === undefined || game.state.status !== 'OVER') {
       return undefined;
     }
     /* for (const player of this.players) {
@@ -116,7 +119,7 @@ export default class TicTacToeAreaController extends GameAreaController<
       }
     } */
     for (const observer of this.observers) {
-      if (observer !== undefined && observer.id === this._model.game.state.winner) {
+      if (observer !== undefined && observer.id === game.state.winner) {
         return observer;
       }
     }
@@ -231,10 +234,10 @@ export default class TicTacToeAreaController extends GameAreaController<
    */
   get status(): GameStatus {
     const game = this._model.game;
-    if (game === undefined || this._model.game?.state.status === undefined) {
+    if (game === undefined || game.state.status === undefined) {
       return 'WAITING_TO_START';
     } else {
-      return this._model.game?.state.status;
+      return game.state.status;
     }
   }
 
@@ -314,12 +317,12 @@ export default class TicTacToeAreaController extends GameAreaController<
    * @param col Column of the move
    */
   public async makeMove(row: TicTacToeGridPosition, col: TicTacToeGridPosition) {
-    if (this._model.game === undefined || this._model.game?.state.status !== 'IN_PROGRESS') {
+    if (this._model.game === undefined || this._model.game.state.status !== 'IN_PROGRESS') {
       throw new Error(NO_GAME_IN_PROGRESS_ERROR);
     }
 
     // have checked that game status is in progress, so whoseTurn is never undefined
-    const gamePiece = this.whoseTurn?.id === this._model.game?.state.x ? 'X' : 'O';
+    const gamePiece = this.whoseTurn?.id === this._model.game.state.x ? 'X' : 'O';
     const move: TicTacToeMove = {
       gamePiece: gamePiece,
       row: row,
