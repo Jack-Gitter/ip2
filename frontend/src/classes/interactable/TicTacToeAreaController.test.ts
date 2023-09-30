@@ -341,6 +341,7 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        controller.joinGame();
         controller.makeMove(0, 0);
         controller.makeMove(1, 1);
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
