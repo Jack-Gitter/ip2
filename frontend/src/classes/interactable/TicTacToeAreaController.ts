@@ -267,7 +267,12 @@ export default class TicTacToeAreaController extends GameAreaController<
   protected _updateFrom(newModel: GameArea<TicTacToeGameState>): void {
     let boardChanged = false;
     const currentBoard = this.board;
-
+    const oldMoves: TicTacToeMove[] = [];
+    if (this._model.game !== undefined) {
+      for (const move of this._model.game.state.moves) {
+        oldMoves.push(move);
+      }
+    }
     super._updateFrom(newModel);
     const newBoard = this.board;
 
@@ -301,8 +306,13 @@ export default class TicTacToeAreaController extends GameAreaController<
 
     if (boardChanged) {
       this.emit('boardChanged', newBoard);
+      //this.emit('turnChanged', ourTurn);
+    }
+    // check if we have increased the moves length an even amount of times
+    if (oldMoves.length % 2 !== newMoves.length % 2) {
       this.emit('turnChanged', ourTurn);
     }
+    // turn should change if the previous moves array last thing does not match the current one right?
   }
 
   /**
