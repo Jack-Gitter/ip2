@@ -309,8 +309,7 @@ export default class TicTacToeAreaController extends GameAreaController<
 
     const command: GameMoveCommand<TicTacToeMove> = {
       type: 'GameMove',
-      //gameID: this._model.game.id,
-      gameID: this._instanceID as string,
+      gameID: this._instanceID ?? '',
       move: move,
     };
     await this._townController.sendInteractableCommand(this.id, command);
