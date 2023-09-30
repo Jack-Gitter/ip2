@@ -265,10 +265,10 @@ export default class TicTacToeAreaController extends GameAreaController<
   protected _updateFrom(newModel: GameArea<TicTacToeGameState>): void {
     const oldGame = { ...this._model.game };
     super._updateFrom(newModel);
-    this._instanceID = newModel.game?.id;
     if (this._model.game === undefined || oldGame === undefined) {
       return;
     }
+    this._instanceID = newModel.game?.id;
     const newMoves = this._model.game.state.moves;
     const oldMoves = oldGame.state?.moves ?? [];
     if (newMoves.length !== oldMoves.length) {

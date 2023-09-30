@@ -349,7 +349,23 @@ describe('[T1] TicTacToeAreaController', () => {
         });
       });
       it('should emit a boardChanged event with the new board', () => {
-        //TODO
+        const emitSpy = jest.spyOn(controller, 'emit');
+        const newModel = JSON.parse(JSON.stringify(controller.toInteractableAreaModel()));
+        const move: TicTacToeMove = {
+          gamePiece: 'X',
+          row: 0,
+          col: 0,
+        };
+        if (newModel.game !== undefined) {
+          newModel.game.state.moves = newModel.game.state.moves.concat(move);
+        }
+        controller.updateFrom(newModel, controller.occupants);
+        expect(emitSpy).toHaveBeenCalledWith('boardChanged', [
+          ['X', undefined, undefined],
+          [undefined, undefined, undefined],
+          [undefined, undefined, undefined],
+        ]);
+
         //Hint: Set up a spy on the `emit` method of the controller
       });
       it('should not emit a boardChanged event if the board has not changed', () => {
