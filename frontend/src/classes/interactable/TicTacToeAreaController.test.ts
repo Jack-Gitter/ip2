@@ -378,6 +378,9 @@ describe('[T1] TicTacToeAreaController', () => {
       });
       it('should not emit a boardChanged event if the board has not changed', () => {
         // when does this happen?
+        controller.makeMove(0, 0);
+        controller.makeMove(1, 1);
+        console.log(controller.toInteractableAreaModel());
       });
       it('should emit a turnChanged event with true if it is our turn', () => {
         // our player is x, so make a move with x, then o, then check to see the emit
@@ -408,8 +411,6 @@ describe('[T1] TicTacToeAreaController', () => {
         };
         controller.updateFrom(newModel, controller.occupants);
         expect(emitSpy).toBeCalledWith('turnChanged', true);
-        //TODO
-        //Hint: Set up a spy on the `emit` method of the controller
       });
       it('should emit a turnChanged event with false if it is not our turn', () => {
         const model = controller.toInteractableAreaModel();
