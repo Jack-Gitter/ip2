@@ -334,7 +334,7 @@ describe('[T1] TicTacToeAreaController', () => {
         const controller = ticTacToeAreaControllerWithProp({ undefinedGame: true });
         expect(() => controller.makeMove(0, 0)).rejects.toThrowError();
       });
-      /*it('Should call townController.sendInteractableCommand', async () => {
+      it('Should call townController.sendInteractableCommand', async () => {
         const controller = ticTacToeAreaControllerWithProp({
           status: 'IN_PROGRESS',
           x: otherPlayers[0].id,
@@ -344,7 +344,7 @@ describe('[T1] TicTacToeAreaController', () => {
         controller.makeMove(0, 0);
         controller.makeMove(1, 1);
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
-      });*/
+      });
     });
   });
   describe('[T1.2] _updateFrom', () => {
