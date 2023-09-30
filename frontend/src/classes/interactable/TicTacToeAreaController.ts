@@ -265,6 +265,7 @@ export default class TicTacToeAreaController extends GameAreaController<
   protected _updateFrom(newModel: GameArea<TicTacToeGameState>): void {
     const oldGame = { ...this._model.game };
     super._updateFrom(newModel);
+    this._instanceID = newModel.game?.id;
     if (this._model.game === undefined || oldGame === undefined) {
       return;
     }
@@ -308,7 +309,8 @@ export default class TicTacToeAreaController extends GameAreaController<
 
     const command: GameMoveCommand<TicTacToeMove> = {
       type: 'GameMove',
-      gameID: this._model.id,
+      //gameID: this._model.game.id,
+      gameID: this._instanceID as string,
       move: move,
     };
     await this._townController.sendInteractableCommand(this.id, command);
