@@ -2,7 +2,6 @@ import {
   GameArea,
   GameMoveCommand,
   GameStatus,
-  InteractableCommand,
   TicTacToeGameState,
   TicTacToeGridPosition,
   TicTacToeMove,
@@ -263,22 +262,42 @@ export default class TicTacToeAreaController extends GameAreaController<
    * If the turn has not changed, does not emit the event.
    */
   protected _updateFrom(newModel: GameArea<TicTacToeGameState>): void {
-    const oldGame = { ...this._model.game };
+    let boardChanged = false;
+    const currentBoard = this.board;
+
     super._updateFrom(newModel);
-    if (this._model.game === undefined || oldGame === undefined) {
-      return;
+    const newBoard = this.board;
+
+    for (let i = 0; i < currentBoard.length; i++) {
+      for (let j = 0; j < currentBoard.length; j++) {
+        if (currentBoard[i][j] !== newBoard[i][j]) {
+          boardChanged = true;
+        }
+      }
     }
-    this._instanceID = newModel.game?.id;
-    const newMoves = this._model.game.state.moves;
-    const oldMoves = oldGame.state?.moves ?? [];
-    if (newMoves.length !== oldMoves.length) {
-      this.emit('boardChanged', this.board);
-      const ourPlayer = this._townController.ourPlayer;
-      const ourTurn =
-        (newMoves[newMoves.length - 1].gamePiece === 'X' &&
-          ourPlayer.id === this._model.game.state.o) ||
+
+    let ourTurn = false;
+    const newMoves: TicTacToeMove[] = [];
+    if (newModel.game !== undefined) {
+      for (const move of newModel.game.state.moves) {
+        newMoves.push(move);
+      }
+    }
+
+    const ourPlayer = this._townController.ourPlayer;
+    if (
+      this._model.game !== undefined &&
+      newMoves.length > 0 &&
+      ((newMoves[newMoves.length - 1].gamePiece === 'X' &&
+        ourPlayer.id === this._model.game.state.x) ||
         (newMoves[newMoves.length - 1].gamePiece === 'O' &&
-          ourPlayer.id === this._model.game.state.x);
+          ourPlayer.id === this._model.game?.state.o))
+    ) {
+      ourTurn = true;
+    }
+
+    if (boardChanged) {
+      this.emit('boardChanged', newBoard);
       this.emit('turnChanged', ourTurn);
     }
   }
@@ -313,6 +332,5 @@ export default class TicTacToeAreaController extends GameAreaController<
       move: move,
     };
     await this._townController.sendInteractableCommand(this.id, command);
-    //this._updateFrom(this._model);
   }
 }
