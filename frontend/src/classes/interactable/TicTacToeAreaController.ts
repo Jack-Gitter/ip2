@@ -294,11 +294,7 @@ export default class TicTacToeAreaController extends GameAreaController<
    * @param col Column of the move
    */
   public async makeMove(row: TicTacToeGridPosition, col: TicTacToeGridPosition) {
-    if (
-      this._model.game === undefined ||
-      this._instanceID === undefined ||
-      this._model.game?.state.status !== 'IN_PROGRESS'
-    ) {
+    if (this._model.game === undefined || this._model.game?.state.status !== 'IN_PROGRESS') {
       throw new Error(NO_GAME_IN_PROGRESS_ERROR);
     }
 
@@ -312,9 +308,10 @@ export default class TicTacToeAreaController extends GameAreaController<
 
     const command: GameMoveCommand<TicTacToeMove> = {
       type: 'GameMove',
-      gameID: this._instanceID,
+      gameID: this._model.id,
       move: move,
     };
-    await this._townController.sendInteractableCommand('GameMove', command);
+    await this._townController.sendInteractableCommand(this.id, command);
+    //this._updateFrom(this._model);
   }
 }

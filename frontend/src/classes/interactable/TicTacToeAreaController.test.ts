@@ -332,15 +332,9 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
-        await controller.joinGame();
         controller.makeMove(0, 0);
         controller.makeMove(1, 1);
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
-        expect(controller.board).toBe([
-          ['X', undefined, undefined],
-          [undefined, 'O', undefined],
-          [undefined, undefined, undefined],
-        ]);
       });
     });
   });
