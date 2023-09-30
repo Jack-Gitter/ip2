@@ -289,9 +289,9 @@ export default class TicTacToeAreaController extends GameAreaController<
       this._model.game !== undefined &&
       newMoves.length > 0 &&
       ((newMoves[newMoves.length - 1].gamePiece === 'X' &&
-        ourPlayer.id === this._model.game.state.x) ||
+        ourPlayer.id === this._model.game.state.o) ||
         (newMoves[newMoves.length - 1].gamePiece === 'O' &&
-          ourPlayer.id === this._model.game?.state.o))
+          ourPlayer.id === this._model.game?.state.x))
     ) {
       ourTurn = true;
     }
