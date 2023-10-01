@@ -70,6 +70,16 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       setPlayers(gameAreaController.players);
       setStatus(gameAreaController.status);
     });
+
+    /*gameAreaController.updateFrom(
+      gameAreaController.toInteractableAreaModel(),
+      gameAreaController.occupants,
+    );*/
+
+    return () => {
+      //gameAreaController.removeListener('gameUpdated');
+      //gameAreaController.removeListener('gameOver');
+    };
   }, [gameAreaController]);
 
   // TODO - implement this component
