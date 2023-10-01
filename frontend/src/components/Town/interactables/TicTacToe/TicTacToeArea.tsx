@@ -53,6 +53,7 @@ import TicTacToeBoard from './TicTacToeBoard';
  */
 function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
+
   const [observers, setObservers] = useState(gameAreaController.observers);
   const [players, setPlayers] = useState(gameAreaController.players);
   const [status, setStatus] = useState(gameAreaController.status);
@@ -109,7 +110,13 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       {gameAreaController.status === 'OVER' ? (
         endGameToast({
           title: 'Game over',
-          description: `${gameAreaController.winner === undefined ? 'tie' : 'game over'}`,
+          description: `${
+            gameAreaController.winner === undefined
+              ? 'tie'
+              : gameAreaController.isOurTurn
+              ? 'you lose'
+              : 'you win'
+          }`,
         })
       ) : (
         <></>
