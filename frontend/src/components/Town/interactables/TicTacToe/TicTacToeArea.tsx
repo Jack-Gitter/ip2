@@ -8,6 +8,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
 import TicTacToeAreaController from '../../../../classes/interactable/TicTacToeAreaController';
@@ -52,10 +53,10 @@ import TicTacToeBoard from './TicTacToeBoard';
  */
 function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
-
   const [observers, setObservers] = useState(gameAreaController.observers);
   const [players, setPlayers] = useState(gameAreaController.players);
   const [status, setStatus] = useState(gameAreaController.status);
+  const endGameToast = useToast();
 
   gameAreaController.addListener('gameUpdated', () => {
     setObservers(gameAreaController.observers);
@@ -102,6 +103,14 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       </Text>
       {status !== 'IN_PROGRESS' ? (
         <Button onClick={() => gameAreaController.joinGame()}>Join New Game</Button>
+      ) : (
+        <></>
+      )}
+      {gameAreaController.status === 'OVER' ? (
+        endGameToast({
+          title: 'Game over',
+          description: `${gameAreaController.winner === undefined ? 'tie' : 'game over'}`,
+        })
       ) : (
         <></>
       )}
