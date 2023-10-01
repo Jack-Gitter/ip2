@@ -90,7 +90,16 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
           </ListItem>
         ))}
       </List>
-      <Text>Current Game Status: {status}</Text>
+      <Text>
+        Current Game Status:
+        {gameAreaController.status === 'IN_PROGRESS'
+          ? `Game in progress, ${gameAreaController.moveCount} moves in, currently ${
+              gameAreaController.isOurTurn
+                ? 'your turn'
+                : `${gameAreaController.whoseTurn?.userName}'s turn`
+            }`
+          : `${gameAreaController.status}`}
+      </Text>
       {status !== 'IN_PROGRESS' ? (
         <Button onClick={() => gameAreaController.joinGame()}>Join New Game</Button>
       ) : (
