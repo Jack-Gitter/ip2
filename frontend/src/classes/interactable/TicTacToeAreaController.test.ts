@@ -310,7 +310,7 @@ describe('[T1] TicTacToeAreaController', () => {
       });
     });
     describe('makeMove', () => {
-      /* it('should throw an error if the game is not in progress (OVER STATUS)', async () => {
+      it('should throw an error if the game is not in progress (OVER STATUS)', async () => {
         const controller = ticTacToeAreaControllerWithProp({
           status: 'OVER',
           x: otherPlayers[0].id,
@@ -330,10 +330,6 @@ describe('[T1] TicTacToeAreaController', () => {
         expect(() => controller.makeMove(0, 0)).rejects.toThrowError();
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
-      it('test', async () => {
-        const controller = ticTacToeAreaControllerWithProp({ undefinedGame: true });
-        expect(() => controller.makeMove(0, 0)).rejects.toThrowError();
-      });
       it('Should call townController.sendInteractableCommand', async () => {
         const controller = ticTacToeAreaControllerWithProp({
           status: 'IN_PROGRESS',
@@ -341,11 +337,10 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
-        controller.joinGame();
         controller.makeMove(0, 0);
         controller.makeMove(1, 1);
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
-      });*/
+      });
     });
   });
   describe('[T1.2] _updateFrom', () => {
