@@ -10,7 +10,7 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import TicTacToeAreaController from '../../../../classes/interactable/TicTacToeAreaController';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
@@ -59,16 +59,18 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
   const [status, setStatus] = useState(gameAreaController.status);
   const endGameToast = useToast();
 
-  gameAreaController.addListener('gameUpdated', () => {
-    setObservers(gameAreaController.observers);
-    setPlayers(gameAreaController.players);
-    setStatus(gameAreaController.status);
-  });
-  gameAreaController.addListener('gameOver', () => {
-    setPlayers(gameAreaController.observers);
-    setPlayers(gameAreaController.players);
-    setStatus(gameAreaController.status);
-  });
+  useEffect(() => {
+    gameAreaController.addListener('gameUpdated', () => {
+      setObservers(gameAreaController.observers);
+      setPlayers(gameAreaController.players);
+      setStatus(gameAreaController.status);
+    });
+    gameAreaController.addListener('gameOver', () => {
+      setPlayers(gameAreaController.observers);
+      setPlayers(gameAreaController.players);
+      setStatus(gameAreaController.status);
+    });
+  }, [gameAreaController]);
 
   // TODO - implement this component
   return (
