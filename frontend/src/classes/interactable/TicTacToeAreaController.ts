@@ -64,12 +64,6 @@ export default class TicTacToeAreaController extends GameAreaController<
         return player;
       }
     }
-    /*for (const observer of this.observers) {
-      if (observer !== undefined && observer.id === this._model.game.state.x) {
-        return observer;
-      }
-    }*/
-
     return undefined;
   }
 
@@ -85,11 +79,6 @@ export default class TicTacToeAreaController extends GameAreaController<
         return player;
       }
     }
-    /*for (const observer of this.observers) {
-      if (observer !== undefined && observer.id === this._model.game.state.o) {
-        return observer;
-      }
-    }*/
     return undefined;
   }
 
@@ -118,11 +107,6 @@ export default class TicTacToeAreaController extends GameAreaController<
         return player;
       }
     }
-    /* for (const observer of this.observers) {
-      if (observer !== undefined && observer.id === game.state.winner) {
-        return observer;
-      }
-    }*/
     return undefined;
   }
 
@@ -151,14 +135,6 @@ export default class TicTacToeAreaController extends GameAreaController<
         }
       }
     }
-    /*for (const observer of this.observers) {
-      if (
-        (gamePieceToBePlayed === 'X' && observer.id === game.state.x) ||
-        (gamePieceToBePlayed === 'O' && observer.id === game.state.o)
-      ) {
-        return observer;
-      }
-    }*/
     return undefined;
   }
 
@@ -171,24 +147,6 @@ export default class TicTacToeAreaController extends GameAreaController<
     const ourPlayer: PlayerController = this._townController.ourPlayer;
     const playerWhosTurnItIs: PlayerController | undefined = this.whoseTurn;
     return playerWhosTurnItIs !== undefined && ourPlayer === playerWhosTurnItIs;
-    /* const game = this._model.game;
-    if (game === undefined || game.state.status !== 'IN_PROGRESS') {
-      return false;
-    }
-    const gamePieceToBePlayed =
-      game.state.moves.length === 0
-        ? 'X'
-        : game.state.moves[game.state.moves.length - 1].gamePiece === 'X'
-        ? 'O'
-        : 'X';
-
-    if (
-      (gamePieceToBePlayed === 'X' && ourPlayersId === game?.state.x) ||
-      (gamePieceToBePlayed === 'O' && ourPlayersId === game.state.o)
-    ) {
-      return true;
-    }
-    return false;*/
   }
 
   /**
@@ -266,11 +224,13 @@ export default class TicTacToeAreaController extends GameAreaController<
     let boardChanged = false;
     const currentBoard = this.board;
     const oldMoves: TicTacToeMove[] = [];
+
     if (this._model.game !== undefined) {
       for (const move of this._model.game.state.moves) {
         oldMoves.push(move);
       }
     }
+
     super._updateFrom(newModel);
     const newBoard = this.board;
 
@@ -304,13 +264,11 @@ export default class TicTacToeAreaController extends GameAreaController<
 
     if (boardChanged) {
       this.emit('boardChanged', newBoard);
-      //this.emit('turnChanged', ourTurn);
     }
-    // check if we have increased the moves length an even amount of times
+
     if (oldMoves.length % 2 !== newMoves.length % 2) {
       this.emit('turnChanged', ourTurn);
     }
-    // turn should change if the previous moves array last thing does not match the current one right?
   }
 
   /**

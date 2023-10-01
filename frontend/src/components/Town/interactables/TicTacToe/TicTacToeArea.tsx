@@ -1,10 +1,22 @@
-import { Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react';
-import React, { useCallback } from 'react';
+import {
+  Button,
+  List,
+  ListItem,
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '@chakra-ui/react';
+import React, { useCallback, useState } from 'react';
 import TicTacToeAreaController from '../../../../classes/interactable/TicTacToeAreaController';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 import GameAreaInteractable from '../GameArea';
+import Leaderboard from '../Leaderboard';
+import TicTacToeBoard from './TicTacToeBoard';
 
 /**
  * The TicTacToeArea component renders the TicTacToe game area.
@@ -40,8 +52,53 @@ import GameAreaInteractable from '../GameArea';
  */
 function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
+
+  const [observers, setObservers] = useState(gameAreaController.observers);
+  const [players, setPlayers] = useState(gameAreaController.players);
+  const [status, setStatus] = useState(gameAreaController.status);
+
+  gameAreaController.addListener('gameUpdated', () => {
+    setObservers(gameAreaController.observers);
+    setPlayers(gameAreaController.players);
+    setStatus(gameAreaController.status);
+  });
+  gameAreaController.addListener('gameOver', () => {
+    setPlayers(gameAreaController.observers);
+    setPlayers(gameAreaController.players);
+    setStatus(gameAreaController.status);
+  });
+
   // TODO - implement this component
-  return <>{gameAreaController.status}</>;
+  return (
+    <>
+      <Leaderboard results={gameAreaController.history} />
+      <Text>Observers:</Text>
+      <List aria-label='list of observers in the game'>
+        {observers.map(observer => (
+          <ListItem key={observer.id}>{observer.userName}</ListItem>
+        ))}
+      </List>
+      <Text>Players:</Text>
+      <List aria-label='list of players in the game'>
+        {players.map(player => (
+          <ListItem key={player.id}>
+            {player.userName
+              ? player.id === gameAreaController.x?.id
+                ? `X: ${player.userName}`
+                : `O: ${player.userName}`
+              : 'No player yet!'}
+          </ListItem>
+        ))}
+      </List>
+      <Text>Current Game Status: {status}</Text>
+      {status !== 'IN_PROGRESS' ? (
+        <Button onClick={() => gameAreaController.joinGame()}>Join New Game</Button>
+      ) : (
+        <></>
+      )}
+      <TicTacToeBoard gameAreaController={gameAreaController} />;
+    </>
+  );
 }
 
 // Do not edit below this line
