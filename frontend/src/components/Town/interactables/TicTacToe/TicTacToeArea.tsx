@@ -54,6 +54,7 @@ import TicTacToeBoard from './TicTacToeBoard';
 function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
 
+  //const [controller, setController] = useState(gameAreaController);
   // here would it be better to just have the model as the variable?
   const [players, setPlayers] = useState(gameAreaController.players);
   const [observers, setObservers] = useState(gameAreaController.observers);
@@ -78,6 +79,9 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       setWhoseTurn(gameAreaController.whoseTurn);
       setWinner(gameAreaController.winner);
     };
+    //const updater = () => {
+    // setController(gameAreaController);
+    //};
     /* const updater = () => {
       setModel(gameAreaController.toInteractableAreaModel());
       setPlayers(gameAreaController.players);
