@@ -91,13 +91,6 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
     }`;
   }
 
-  /* const statusMessage =
-    gameAreaValues.status === 'IN_PROGRESS'
-      ? `Game in progress, ${gameAreaValues.moveCount} moves in, currently ${
-          gameAreaValues.isOurTurn ? ' your turn' : ` ${gameAreaValues.whoseTurn?.userName}'s turn`
-        }`
-      : ` Game ${gameAreaValues.status === 'WAITING_TO_START' ? 'not yet started' : 'over'}`;*/
-
   const showErrorJoinToast = (errorMessage: string) => {
     errorJoinToast({
       description: `Error: ${errorMessage}`,
