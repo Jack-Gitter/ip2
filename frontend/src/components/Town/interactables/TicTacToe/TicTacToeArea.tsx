@@ -135,14 +135,14 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       </List>
       <Text>Players:</Text>
       <List aria-label='list of players in the game'>
-        <ListItem>{v.x !== undefined ? `X: ${v.x.userName}` : 'No player yet!'}</ListItem>
-        <ListItem>{v.o !== undefined ? `O: ${v.o.userName}` : 'No player yet!'}</ListItem>
+        <ListItem>{v.x !== undefined ? `X: ${v.x.userName}` : 'X: (No player yet!)'}</ListItem>
+        <ListItem>{v.o !== undefined ? `O: ${v.o.userName}` : 'O: (No player yet!)'}</ListItem>
       </List>
       <Text>
         Current Game Status:
         {v.status === 'IN_PROGRESS'
           ? ` Game in progress, ${v.moveCount} moves in, currently ${
-              v.isOurTurn ? 'your turn' : `${v.whoseTurn?.userName}'s turn`
+              v.isOurTurn ? ' your turn' : ` ${v.whoseTurn?.userName}'s turn`
             }`
           : ` Game ${v.status === 'WAITING_TO_START' ? 'not started yet' : 'over'}`}
       </Text>
