@@ -317,7 +317,7 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
-        expect(() => controller.makeMove(0, 0)).rejects.toThrowError();
+        expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
       it('should throw an error if the game is not in progress (WAITING_TO_START STATUS)', async () => {
@@ -327,7 +327,7 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
-        expect(() => controller.makeMove(0, 0)).rejects.toThrowError();
+        expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
       it('Should call townController.sendInteractableCommand', async () => {
@@ -337,8 +337,9 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
-        controller.makeMove(0, 0);
-        controller.makeMove(1, 1);
+        await controller.joinGame();
+        await controller.makeMove(0, 0);
+        await controller.makeMove(1, 1);
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
       });
     });

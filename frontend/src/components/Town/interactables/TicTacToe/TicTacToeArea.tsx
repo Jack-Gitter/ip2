@@ -54,31 +54,43 @@ import TicTacToeBoard from './TicTacToeBoard';
 function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
 
-  const [observers, setObservers] = useState(gameAreaController.observers);
+  // here would it be better to just have the model as the variable?
   const [players, setPlayers] = useState(gameAreaController.players);
+  const [observers, setObservers] = useState(gameAreaController.observers);
   const [status, setStatus] = useState(gameAreaController.status);
-  const endGameToast = useToast();
+  const [moveCount, setMoveCount] = useState(gameAreaController.moveCount);
+  const [isOurTurn, setIsOurTurn] = useState(gameAreaController.isOurTurn);
+  const [whoseTurn, setWhoseTurn] = useState(gameAreaController.whoseTurn);
+  const [winner, setWinner] = useState(gameAreaController.winner);
 
+  //const [model, setModel] = useState(gameAreaController.toInteractableAreaModel());
+  // do something like const [model, setModel] = useState(gameAreaController.tomode())
+  // then in the updater just do setModel({...gameAreaController.tomodel()})?
+
+  const endGameToast = useToast();
   useEffect(() => {
-    gameAreaController.addListener('gameUpdated', () => {
+    const updater = () => {
       setObservers(gameAreaController.observers);
       setPlayers(gameAreaController.players);
       setStatus(gameAreaController.status);
-    });
-    gameAreaController.addListener('gameOver', () => {
-      setPlayers(gameAreaController.observers);
-      setPlayers(gameAreaController.players);
-      setStatus(gameAreaController.status);
-    });
+      setMoveCount(gameAreaController.moveCount);
+      setIsOurTurn(gameAreaController.isOurTurn);
+      setWhoseTurn(gameAreaController.whoseTurn);
+      setWinner(gameAreaController.winner);
+    };
 
-    /*gameAreaController.updateFrom(
-      gameAreaController.toInteractableAreaModel(),
-      gameAreaController.occupants,
-    );*/
+    /* const updater = () => {
+      setModel(gameAreaController.toInteractableAreaModel());
+      setPlayers(gameAreaController.players);
+    };*/
+
+    // how to "rerender accordingly??? is this right?"
+    gameAreaController.addListener('gameUpdated', updater);
+    gameAreaController.addListener('gameEnd', updater);
 
     return () => {
-      //gameAreaController.removeListener('gameUpdated');
-      //gameAreaController.removeListener('gameOver');
+      gameAreaController.removeListener('gameUpdated', updater);
+      gameAreaController.removeListener('gameEnd', updater);
     };
   }, [gameAreaController]);
 
@@ -106,29 +118,21 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       </List>
       <Text>
         Current Game Status:
-        {gameAreaController.status === 'IN_PROGRESS'
-          ? `Game in progress, ${gameAreaController.moveCount} moves in, currently ${
-              gameAreaController.isOurTurn
-                ? 'your turn'
-                : `${gameAreaController.whoseTurn?.userName}'s turn`
+        {status === 'IN_PROGRESS'
+          ? ` Game in progress, ${moveCount} moves in, currently ${
+              isOurTurn ? 'your turn' : `${whoseTurn?.userName}'s turn`
             }`
-          : `${gameAreaController.status}`}
+          : ` Game ${status === 'WAITING_TO_START' ? 'not started yet' : 'over'}`}
       </Text>
       {status !== 'IN_PROGRESS' ? (
-        <Button onClick={() => gameAreaController.joinGame()}>Join New Game</Button>
+        <Button onClick={async () => gameAreaController.joinGame()}>Join New Game</Button>
       ) : (
         <></>
       )}
-      {gameAreaController.status === 'OVER' ? (
+      {status === 'OVER' ? (
         endGameToast({
           title: 'Game over',
-          description: `${
-            gameAreaController.winner === undefined
-              ? 'tie'
-              : gameAreaController.isOurTurn
-              ? 'you lose'
-              : 'you win'
-          }`,
+          description: `${winner === undefined ? 'tie' : isOurTurn ? 'you lose' : 'you win'}`,
         })
       ) : (
         <></>

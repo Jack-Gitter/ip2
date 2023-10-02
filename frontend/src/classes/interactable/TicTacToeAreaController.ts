@@ -304,6 +304,6 @@ export default class TicTacToeAreaController extends GameAreaController<
       gameID: this._instanceID ?? '',
       move: move,
     };
-    this._townController.sendInteractableCommand(this.id, command);
+    await this._townController.sendInteractableCommand(this.id, command);
   }
 }
