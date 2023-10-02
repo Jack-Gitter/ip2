@@ -54,8 +54,11 @@ import TicTacToeBoard from './TicTacToeBoard';
 function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
   const townController = useTownController();
+  const endGameToast = useToast();
+  const errorJoinToast = useToast();
 
-  const [v, setV] = useState({
+  const [isLoading, setIsLoading] = useState(false);
+  const [gameAreaValues, setGameAreaValues] = useState({
     players: gameAreaController.players,
     observers: gameAreaController.observers,
     status: gameAreaController.status,
@@ -68,10 +71,33 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
     o: gameAreaController.o,
     isPlayer: gameAreaController.isPlayer,
   });
-  // when the promise is resolved, how do I set isloading to false?
-  const [isLoading, setIsLoading] = useState(false);
-  const endGameToast = useToast();
-  const errorJoinToast = useToast();
+
+  const oPlayerInPlayerList =
+    gameAreaValues.o !== undefined ? `O: ${gameAreaValues.o.userName}` : 'O: (No player yet!)';
+  const xPlayerInPlayerList =
+    gameAreaValues.x !== undefined ? `X: ${gameAreaValues.x.userName}` : 'X: (No player yet!)';
+  let statusMessage = '';
+
+  if (gameAreaValues.status === 'IN_PROGRESS') {
+    statusMessage += `Game in progress, ${gameAreaValues.moveCount} moves in, currently `;
+    if (gameAreaValues.isOurTurn) {
+      statusMessage += 'your turn';
+    } else {
+      statusMessage += `${gameAreaValues.whoseTurn?.userName}'s turn`;
+    }
+  } else {
+    statusMessage += `Game ${
+      gameAreaValues.status === 'WAITING_TO_START' ? 'not yet started' : 'over'
+    }`;
+  }
+
+  /* const statusMessage =
+    gameAreaValues.status === 'IN_PROGRESS'
+      ? `Game in progress, ${gameAreaValues.moveCount} moves in, currently ${
+          gameAreaValues.isOurTurn ? ' your turn' : ` ${gameAreaValues.whoseTurn?.userName}'s turn`
+        }`
+      : ` Game ${gameAreaValues.status === 'WAITING_TO_START' ? 'not yet started' : 'over'}`;*/
+
   const showErrorJoinToast = (errorMessage: string) => {
     errorJoinToast({
       description: `Error: ${errorMessage}`,
@@ -92,7 +118,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       });
     };
     const updater = () => {
-      setV({
+      setGameAreaValues({
         players: gameAreaController.players,
         observers: gameAreaController.observers,
         status: gameAreaController.status,
@@ -119,26 +145,20 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
   // TODO - implement this component
   return (
     <>
-      <Leaderboard results={v.history} />
+      <Leaderboard results={gameAreaValues.history} />
       <Text>Observers:</Text>
       <List aria-label='list of observers in the game'>
-        {v.observers.map(observer => (
+        {gameAreaValues.observers.map(observer => (
           <ListItem key={observer.id}>{observer.userName}</ListItem>
         ))}
       </List>
       <Text>Players:</Text>
       <List aria-label='list of players in the game'>
-        <ListItem>{v.x !== undefined ? `X: ${v.x.userName}` : 'X: (No player yet!)'}</ListItem>
-        <ListItem>{v.o !== undefined ? `O: ${v.o.userName}` : 'O: (No player yet!)'}</ListItem>
+        <ListItem>{xPlayerInPlayerList}</ListItem>
+        <ListItem>{oPlayerInPlayerList}</ListItem>
       </List>
-      <Text>
-        {v.status === 'IN_PROGRESS'
-          ? `Game in progress, ${v.moveCount} moves in, currently ${
-              v.isOurTurn ? ' your turn' : ` ${v.whoseTurn?.userName}'s turn`
-            }`
-          : ` Game ${v.status === 'WAITING_TO_START' ? 'not yet started' : 'over'}`}
-      </Text>
-      {v.status !== 'IN_PROGRESS' && !v.isPlayer ? (
+      <Text>{statusMessage}</Text>
+      {gameAreaValues.status !== 'IN_PROGRESS' && !gameAreaValues.isPlayer ? (
         <Button
           isLoading={isLoading}
           disabled={isLoading}
