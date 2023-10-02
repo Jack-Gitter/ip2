@@ -254,10 +254,8 @@ export default class TicTacToeAreaController extends GameAreaController<
     if (
       this._model.game !== undefined &&
       newMoves.length > 0 &&
-      ((newMoves[newMoves.length - 1].gamePiece === 'X' &&
-        ourPlayer.id === this._model.game.state.o) ||
-        (newMoves[newMoves.length - 1].gamePiece === 'O' &&
-          ourPlayer.id === this._model.game?.state.x))
+      ((newMoves[newMoves.length - 1].gamePiece === 'X' && ourPlayer.id === this.o?.id) ||
+        (newMoves[newMoves.length - 1].gamePiece === 'O' && ourPlayer.id === this.x?.id))
     ) {
       ourTurn = true;
     }
@@ -292,7 +290,7 @@ export default class TicTacToeAreaController extends GameAreaController<
     }
 
     // have checked that game status is in progress, so whoseTurn is never undefined
-    const gamePiece = this.whoseTurn?.id === this._model.game.state.x ? 'X' : 'O';
+    const gamePiece = this.whoseTurn?.id === this.x?.id ? 'X' : 'O';
     const move: TicTacToeMove = {
       gamePiece: gamePiece,
       row: row,

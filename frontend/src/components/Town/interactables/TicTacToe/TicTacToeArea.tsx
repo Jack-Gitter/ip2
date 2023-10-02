@@ -70,18 +70,26 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
   });
   const endGameToast = useToast();
 
+  // if the winning game piece is x and the winner.id === game._model.game.x and gamePiece() is x
+
   useEffect(() => {
     const showToast = () => {
-      endGameToast({
-        title: 'Game over',
-        description: `${
-          gameAreaController.winner === undefined
-            ? 'tie'
-            : gameAreaController.isOurTurn
-            ? 'you lose'
-            : 'you win'
-        }`,
-      });
+      const model = gameAreaController.toInteractableAreaModel();
+      const winner = gameAreaController.winner;
+      if (winner !== undefined && model.game !== undefined) {
+        const ourPlayerHasWon =
+          (winner.id === model.game.state.x && gameAreaController.gamePiece === 'X') ||
+          (winner.id === model.game.state.o && gameAreaController.gamePiece === 'O');
+        endGameToast({
+          description: `${
+            gameAreaController.winner === undefined
+              ? 'Game ended in a tie'
+              : ourPlayerHasWon
+              ? 'You won!'
+              : 'You lost :('
+          }`,
+        });
+      }
     };
     const updater = () => {
       setV({
@@ -127,7 +135,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
           ? `Game in progress, ${v.moveCount} moves in, currently ${
               v.isOurTurn ? ' your turn' : ` ${v.whoseTurn?.userName}'s turn`
             }`
-          : ` Game ${v.status === 'WAITING_TO_START' ? 'not started yet' : 'over'}`}
+          : ` Game ${v.status === 'WAITING_TO_START' ? 'not yet started' : 'over'}`}
       </Text>
       {v.status !== 'IN_PROGRESS' ? (
         <Button onClick={async () => gameAreaController.joinGame()}>Join New Game</Button>

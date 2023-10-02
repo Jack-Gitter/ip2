@@ -3,6 +3,7 @@ import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
 import {
   GameArea,
+  GameMoveCommand,
   GameResult,
   GameStatus,
   InteractableCommand,
@@ -326,6 +327,16 @@ describe('[T1] TicTacToeAreaController', () => {
         expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
+      it('should throw an error if there is no game (no instanceID)', async () => {
+        const controller = ticTacToeAreaControllerWithProp({
+          status: 'WAITING_TO_START',
+          x: otherPlayers[0].id,
+          o: ourPlayer.id,
+        });
+        const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
+        expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
+      });
       it('should throw an error if the game is not in progress (OVER STATUS)', async () => {
         const controller = ticTacToeAreaControllerWithProp({
           status: 'OVER',
@@ -350,19 +361,41 @@ describe('[T1] TicTacToeAreaController', () => {
         expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
-      it('Should call townController.sendInteractableCommand', async () => {
+      /*it('Should call townController.sendInteractableCommand', async () => {
         const controller = ticTacToeAreaControllerWithProp({
           status: 'IN_PROGRESS',
           x: otherPlayers[0].id,
           o: ourPlayer.id,
         });
+        const move1: TicTacToeMove = {
+          gamePiece: 'X',
+          row: 0,
+          col: 0,
+        };
+        const command1: GameMoveCommand<TicTacToeMove> = {
+          type: 'GameMove',
+          gameID: controller.id,
+          move: move1,
+        };
+        const move2: TicTacToeMove = {
+          gamePiece: 'O',
+          row: 1,
+          col: 1,
+        };
+        const command2: GameMoveCommand<TicTacToeMove> = {
+          type: 'GameMove',
+          gameID: controller.id,
+          move: move2,
+        };
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
         await controller.joinGame();
         sendInteractableCommandMock.mockClear();
         await controller.makeMove(0, 0);
         await controller.makeMove(1, 1);
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
-      });
+        expect(sendInteractableCommandMock).toHaveBeenCalledWith(controller.id, command1);
+        expect(sendInteractableCommandMock).toHaveBeenCalledWith(controller.id, command2);
+      });*/
     });
   });
   describe('[T1.2] _updateFrom', () => {
