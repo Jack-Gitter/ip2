@@ -137,15 +137,6 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       <List aria-label='list of players in the game'>
         <ListItem>{v.x !== undefined ? `X: ${v.x.userName}` : 'No player yet!'}</ListItem>
         <ListItem>{v.o !== undefined ? `O: ${v.o.userName}` : 'No player yet!'}</ListItem>
-        {/*v.players.map(player => (
-          <ListItem key={player.id}>
-            {player.userName
-              ? player.id === gameAreaController.x?.id
-                ? `X: ${player.userName}`
-                : `O: ${player.userName}`
-              : 'No player yet!'}
-          </ListItem>
-            ))*/}
       </List>
       <Text>
         Current Game Status:

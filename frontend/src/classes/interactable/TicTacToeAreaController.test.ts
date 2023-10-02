@@ -5,6 +5,7 @@ import {
   GameArea,
   GameResult,
   GameStatus,
+  InteractableCommand,
   TicTacToeGameState,
   TicTacToeGridPosition,
   TicTacToeMove,
@@ -13,6 +14,7 @@ import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import GameAreaController from './GameAreaController';
 import TicTacToeAreaController from './TicTacToeAreaController';
+import { InteractableID } from '../../generated/client';
 
 describe('[T1] TicTacToeAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -33,7 +35,6 @@ describe('[T1] TicTacToeAreaController', () => {
   Object.defineProperty(mockTownController, 'players', {
     get: () => [ourPlayer, ...otherPlayers],
   });
-
   function ticTacToeAreaControllerWithProp({
     _id,
     history,
@@ -89,6 +90,11 @@ describe('[T1] TicTacToeAreaController', () => {
         assert(p);
         return p;
       });
+      mockTownController.sendInteractableCommand.mockImplementationOnce(
+        (s: InteractableID, c: InteractableCommand) => {
+          return new Promise((resolve, reject) => resolve({ gameID: id, something: s, else: c }));
+        },
+      );
     }
     return ret;
   }
@@ -338,6 +344,7 @@ describe('[T1] TicTacToeAreaController', () => {
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
         await controller.joinGame();
+        sendInteractableCommandMock.mockClear();
         await controller.makeMove(0, 0);
         await controller.makeMove(1, 1);
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(2);
