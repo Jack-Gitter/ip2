@@ -105,6 +105,12 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
         o: gameAreaController.o,
       });
     };
+    const showToast = () => {
+      endGameToast({
+        title: 'Game over',
+        description: `${v.winner === undefined ? 'tie' : v.isOurTurn ? 'you lose' : 'you win'}`,
+      });
+    };
     //const updater = () => {
     // setController(gameAreaController);
     //};
@@ -115,11 +121,11 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
 
     // how to "rerender accordingly??? is this right?"
     gameAreaController.addListener('gameUpdated', updater);
-    gameAreaController.addListener('gameEnd', updater);
+    gameAreaController.addListener('gameEnd', showToast);
 
     return () => {
       gameAreaController.removeListener('gameUpdated', updater);
-      gameAreaController.removeListener('gameEnd', updater);
+      gameAreaController.removeListener('gameEnd', showToast);
     };
   }, [gameAreaController]);
 
@@ -139,23 +145,14 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
         <ListItem>{v.o !== undefined ? `O: ${v.o.userName}` : 'O: (No player yet!)'}</ListItem>
       </List>
       <Text>
-        Current Game Status:
         {v.status === 'IN_PROGRESS'
-          ? ` Game in progress, ${v.moveCount} moves in, currently ${
+          ? `Game in progress, ${v.moveCount} moves in, currently ${
               v.isOurTurn ? ' your turn' : ` ${v.whoseTurn?.userName}'s turn`
             }`
           : ` Game ${v.status === 'WAITING_TO_START' ? 'not started yet' : 'over'}`}
       </Text>
       {v.status !== 'IN_PROGRESS' ? (
         <Button onClick={async () => gameAreaController.joinGame()}>Join New Game</Button>
-      ) : (
-        <></>
-      )}
-      {v.status === 'OVER' ? (
-        endGameToast({
-          title: 'Game over',
-          description: `${v.winner === undefined ? 'tie' : v.isOurTurn ? 'you lose' : 'you win'}`,
-        })
       ) : (
         <></>
       )}
