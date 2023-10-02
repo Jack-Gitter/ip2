@@ -72,9 +72,10 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
   const [isLoading, setIsLoading] = useState(false);
   const endGameToast = useToast();
   const errorJoinToast = useToast();
-  const showErrorJoinToast = () => {
+  const showErrorJoinToast = (errorMessage: string) => {
     errorJoinToast({
-      description: 'error',
+      description: `Error: ${errorMessage}`,
+      status: 'error',
     });
   };
 
@@ -145,7 +146,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
             setIsLoading(true);
             gameAreaController.joinGame().then(
               () => setIsLoading(false),
-              () => showErrorJoinToast(),
+              e => showErrorJoinToast(e.message),
             );
           }}>
           Join New Game

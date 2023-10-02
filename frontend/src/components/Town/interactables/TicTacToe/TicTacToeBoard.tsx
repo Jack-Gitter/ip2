@@ -1,6 +1,7 @@
 import { Button, chakra, Container } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TicTacToeAreaController from '../../../../classes/interactable/TicTacToeAreaController';
+import useTownController from '../../../../hooks/useTownController';
 
 export type TicTacToeGameProps = {
   gameAreaController: TicTacToeAreaController;
@@ -54,20 +55,50 @@ const StyledTicTacToeBoard = chakra(Container, {
  * @param gameAreaController the controller for the TicTacToe game
  */
 export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProps): JSX.Element {
-  //TODO - implement this component (delete what's here first)
+  const [board, setBoard] = useState(gameAreaController.board);
+  const [ourTurn, setOurTurn] = useState(gameAreaController.isOurTurn);
+  useEffect(() => {
+    const updater = () => {
+      setBoard(gameAreaController.board);
+      console.log('hi');
+    };
+    const changeTurn = () => {
+      setOurTurn(gameAreaController.isOurTurn);
+    };
+
+    gameAreaController.addListener('boardChanged', updater);
+    gameAreaController.addListener('turnChanged', changeTurn);
+  }, [gameAreaController]);
+
   return (
     <StyledTicTacToeBoard aria-label='Tic-Tac-Toe Board'>
       <StyledTicTacToeSquare aria-label='Cell 0,0'>
-        {gameAreaController.board[0][0]}
+        {board[0][0]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 0,1'></StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 0,2'></StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 1,0'></StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 1,1'></StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 1,2'></StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 2,0'></StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 2,1'></StyledTicTacToeSquare>
-      <StyledTicTacToeSquare aria-label='Cell 2,2'></StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 0,1'>
+        {board[0][1]}
+      </StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 0,2'>
+        {board[0][2]}
+      </StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 1,0'>
+        {board[1][0]}
+      </StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 1,1'>
+        {board[1][1]}
+      </StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 1,2'>
+        {board[1][2]}
+      </StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 2,0'>
+        {board[2][0]}
+      </StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 2,1'>
+        {board[2][1]}
+      </StyledTicTacToeSquare>
+      <StyledTicTacToeSquare aria-label='Cell 2,2'>
+        {board[2][2]}
+      </StyledTicTacToeSquare>
     </StyledTicTacToeBoard>
   );
 }
