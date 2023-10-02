@@ -65,6 +65,8 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
     whoseTurn: gameAreaController.whoseTurn,
     winner: gameAreaController.winner,
     history: gameAreaController.history,
+    x: gameAreaController.x,
+    o: gameAreaController.o,
   });
   /*const [players, setPlayers] = useState(gameAreaController.players);
   const [observers, setObservers] = useState(gameAreaController.observers);
@@ -99,6 +101,8 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
         whoseTurn: gameAreaController.whoseTurn,
         winner: gameAreaController.winner,
         history: gameAreaController.history,
+        x: gameAreaController.x,
+        o: gameAreaController.o,
       });
     };
     //const updater = () => {
@@ -131,7 +135,9 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       </List>
       <Text>Players:</Text>
       <List aria-label='list of players in the game'>
-        {v.players.map(player => (
+        <ListItem>{v.x !== undefined ? `X: ${v.x.userName}` : 'No player yet!'}</ListItem>
+        <ListItem>{v.o !== undefined ? `O: ${v.o.userName}` : 'No player yet!'}</ListItem>
+        {/*v.players.map(player => (
           <ListItem key={player.id}>
             {player.userName
               ? player.id === gameAreaController.x?.id
@@ -139,7 +145,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
                 : `O: ${player.userName}`
               : 'No player yet!'}
           </ListItem>
-        ))}
+            ))*/}
       </List>
       <Text>
         Current Game Status:
