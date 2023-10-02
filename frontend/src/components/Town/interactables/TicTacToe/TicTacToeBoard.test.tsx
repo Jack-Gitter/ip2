@@ -231,7 +231,7 @@ describe('TicTacToeBoard', () => {
       act(() => {
         gameAreaController.emit('boardChanged', gameAreaController.mockBoard);
       });
-      checkBoard({});
+      await checkBoard({});
       gameAreaController.mockBoard = [
         ['X', 'O', 'X'],
         [undefined, undefined, 'X'],
@@ -240,7 +240,7 @@ describe('TicTacToeBoard', () => {
       act(() => {
         gameAreaController.emit('boardChanged', gameAreaController.mockBoard);
       });
-      checkBoard({});
+      await checkBoard({});
     });
   });
   describe('[T3.2] When playing the game', () => {
