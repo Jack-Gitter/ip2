@@ -78,7 +78,6 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       setWhoseTurn(gameAreaController.whoseTurn);
       setWinner(gameAreaController.winner);
     };
-
     /* const updater = () => {
       setModel(gameAreaController.toInteractableAreaModel());
       setPlayers(gameAreaController.players);
