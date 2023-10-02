@@ -56,13 +56,23 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
 
   //const [controller, setController] = useState(gameAreaController);
   // here would it be better to just have the model as the variable?
-  const [players, setPlayers] = useState(gameAreaController.players);
+  const [v, setV] = useState({
+    players: gameAreaController.players,
+    observers: gameAreaController.observers,
+    status: gameAreaController.status,
+    moveCount: gameAreaController.moveCount,
+    isOurTurn: gameAreaController.isOurTurn,
+    whoseTurn: gameAreaController.whoseTurn,
+    winner: gameAreaController.winner,
+    history: gameAreaController.history,
+  });
+  /*const [players, setPlayers] = useState(gameAreaController.players);
   const [observers, setObservers] = useState(gameAreaController.observers);
   const [status, setStatus] = useState(gameAreaController.status);
   const [moveCount, setMoveCount] = useState(gameAreaController.moveCount);
   const [isOurTurn, setIsOurTurn] = useState(gameAreaController.isOurTurn);
   const [whoseTurn, setWhoseTurn] = useState(gameAreaController.whoseTurn);
-  const [winner, setWinner] = useState(gameAreaController.winner);
+  const [winner, setWinner] = useState(gameAreaController.winner);*/
 
   //const [model, setModel] = useState(gameAreaController.toInteractableAreaModel());
   // do something like const [model, setModel] = useState(gameAreaController.tomode())
@@ -70,7 +80,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
 
   const endGameToast = useToast();
   useEffect(() => {
-    const updater = () => {
+    /*const updater = () => {
       setObservers(gameAreaController.observers);
       setPlayers(gameAreaController.players);
       setStatus(gameAreaController.status);
@@ -78,6 +88,18 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       setIsOurTurn(gameAreaController.isOurTurn);
       setWhoseTurn(gameAreaController.whoseTurn);
       setWinner(gameAreaController.winner);
+    };*/
+    const updater = () => {
+      setV({
+        players: gameAreaController.players,
+        observers: gameAreaController.observers,
+        status: gameAreaController.status,
+        moveCount: gameAreaController.moveCount,
+        isOurTurn: gameAreaController.isOurTurn,
+        whoseTurn: gameAreaController.whoseTurn,
+        winner: gameAreaController.winner,
+        history: gameAreaController.history,
+      });
     };
     //const updater = () => {
     // setController(gameAreaController);
@@ -100,16 +122,16 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
   // TODO - implement this component
   return (
     <>
-      <Leaderboard results={gameAreaController.history} />
+      <Leaderboard results={v.history} />
       <Text>Observers:</Text>
       <List aria-label='list of observers in the game'>
-        {observers.map(observer => (
+        {v.observers.map(observer => (
           <ListItem key={observer.id}>{observer.userName}</ListItem>
         ))}
       </List>
       <Text>Players:</Text>
       <List aria-label='list of players in the game'>
-        {players.map(player => (
+        {v.players.map(player => (
           <ListItem key={player.id}>
             {player.userName
               ? player.id === gameAreaController.x?.id
@@ -121,21 +143,21 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       </List>
       <Text>
         Current Game Status:
-        {status === 'IN_PROGRESS'
-          ? ` Game in progress, ${moveCount} moves in, currently ${
-              isOurTurn ? 'your turn' : `${whoseTurn?.userName}'s turn`
+        {v.status === 'IN_PROGRESS'
+          ? ` Game in progress, ${v.moveCount} moves in, currently ${
+              v.isOurTurn ? 'your turn' : `${v.whoseTurn?.userName}'s turn`
             }`
-          : ` Game ${status === 'WAITING_TO_START' ? 'not started yet' : 'over'}`}
+          : ` Game ${v.status === 'WAITING_TO_START' ? 'not started yet' : 'over'}`}
       </Text>
-      {status !== 'IN_PROGRESS' ? (
+      {v.status !== 'IN_PROGRESS' ? (
         <Button onClick={async () => gameAreaController.joinGame()}>Join New Game</Button>
       ) : (
         <></>
       )}
-      {status === 'OVER' ? (
+      {v.status === 'OVER' ? (
         endGameToast({
           title: 'Game over',
-          description: `${winner === undefined ? 'tie' : isOurTurn ? 'you lose' : 'you win'}`,
+          description: `${v.winner === undefined ? 'tie' : v.isOurTurn ? 'you lose' : 'you win'}`,
         })
       ) : (
         <></>
