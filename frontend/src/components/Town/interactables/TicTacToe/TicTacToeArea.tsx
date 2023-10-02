@@ -68,41 +68,21 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
     x: gameAreaController.x,
     o: gameAreaController.o,
   });
-  /*const [players, setPlayers] = useState(gameAreaController.players);
-  const [observers, setObservers] = useState(gameAreaController.observers);
-  const [status, setStatus] = useState(gameAreaController.status);
-  const [moveCount, setMoveCount] = useState(gameAreaController.moveCount);
-  const [isOurTurn, setIsOurTurn] = useState(gameAreaController.isOurTurn);
-  const [whoseTurn, setWhoseTurn] = useState(gameAreaController.whoseTurn);
-  const [winner, setWinner] = useState(gameAreaController.winner);*/
-
-  //const [model, setModel] = useState(gameAreaController.toInteractableAreaModel());
-  // do something like const [model, setModel] = useState(gameAreaController.tomode())
-  // then in the updater just do setModel({...gameAreaController.tomodel()})?
-
   const endGameToast = useToast();
-  const showToast = () => {
-    endGameToast({
-      title: 'Game over',
-      description: `${
-        gameAreaController.winner === undefined
-          ? 'tie'
-          : gameAreaController.isOurTurn
-          ? 'you lose'
-          : 'you win'
-      }`,
-    });
-  };
+
   useEffect(() => {
-    /*const updater = () => {
-      setObservers(gameAreaController.observers);
-      setPlayers(gameAreaController.players);
-      setStatus(gameAreaController.status);
-      setMoveCount(gameAreaController.moveCount);
-      setIsOurTurn(gameAreaController.isOurTurn);
-      setWhoseTurn(gameAreaController.whoseTurn);
-      setWinner(gameAreaController.winner);
-    };*/
+    const showToast = () => {
+      endGameToast({
+        title: 'Game over',
+        description: `${
+          gameAreaController.winner === undefined
+            ? 'tie'
+            : gameAreaController.isOurTurn
+            ? 'you lose'
+            : 'you win'
+        }`,
+      });
+    };
     const updater = () => {
       setV({
         players: gameAreaController.players,
@@ -117,15 +97,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
         o: gameAreaController.o,
       });
     };
-    //const updater = () => {
-    // setController(gameAreaController);
-    //};
-    /* const updater = () => {
-      setModel(gameAreaController.toInteractableAreaModel());
-      setPlayers(gameAreaController.players);
-    };*/
 
-    // how to "rerender accordingly??? is this right?"
     gameAreaController.addListener('gameUpdated', updater);
     gameAreaController.addListener('gameEnd', showToast);
 
@@ -133,7 +105,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       gameAreaController.removeListener('gameUpdated', updater);
       gameAreaController.removeListener('gameEnd', showToast);
     };
-  }, [showToast, gameAreaController]);
+  }, [gameAreaController, endGameToast]);
 
   // TODO - implement this component
   return (

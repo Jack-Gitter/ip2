@@ -316,6 +316,16 @@ describe('[T1] TicTacToeAreaController', () => {
       });
     });
     describe('makeMove', () => {
+      it('should throw an error if there is no game (no instanceID)', async () => {
+        const controller = ticTacToeAreaControllerWithProp({
+          status: 'OVER',
+          x: otherPlayers[0].id,
+          o: ourPlayer.id,
+        });
+        const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
+        expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
+      });
       it('should throw an error if the game is not in progress (OVER STATUS)', async () => {
         const controller = ticTacToeAreaControllerWithProp({
           status: 'OVER',
@@ -323,6 +333,8 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        await controller.joinGame();
+        sendInteractableCommandMock.mockClear();
         expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
@@ -333,6 +345,8 @@ describe('[T1] TicTacToeAreaController', () => {
           o: ourPlayer.id,
         });
         const sendInteractableCommandMock = mockTownController.sendInteractableCommand;
+        await controller.joinGame();
+        sendInteractableCommandMock.mockClear();
         expect(async () => controller.makeMove(0, 0)).rejects.toThrowError();
         expect(sendInteractableCommandMock.mock.calls).toHaveLength(0);
       });
