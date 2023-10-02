@@ -53,9 +53,8 @@ import TicTacToeBoard from './TicTacToeBoard';
  */
 function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const gameAreaController = useInteractableAreaController<TicTacToeAreaController>(interactableID);
+  const townController = useTownController();
 
-  //const [controller, setController] = useState(gameAreaController);
-  // here would it be better to just have the model as the variable?
   const [v, setV] = useState({
     players: gameAreaController.players,
     observers: gameAreaController.observers,
@@ -67,29 +66,29 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
     history: gameAreaController.history,
     x: gameAreaController.x,
     o: gameAreaController.o,
+    isPlayer: gameAreaController.isPlayer,
   });
+  // when the promise is resolved, how do I set isloading to false?
+  const [isLoading, setIsLoading] = useState(false);
   const endGameToast = useToast();
-
-  // if the winning game piece is x and the winner.id === game._model.game.x and gamePiece() is x
+  const errorJoinToast = useToast();
+  const showErrorJoinToast = () => {
+    errorJoinToast({
+      description: 'error',
+    });
+  };
 
   useEffect(() => {
     const showToast = () => {
-      const model = gameAreaController.toInteractableAreaModel();
-      const winner = gameAreaController.winner;
-      if (winner !== undefined && model.game !== undefined) {
-        const ourPlayerHasWon =
-          (winner.id === model.game.state.x && gameAreaController.gamePiece === 'X') ||
-          (winner.id === model.game.state.o && gameAreaController.gamePiece === 'O');
-        endGameToast({
-          description: `${
-            gameAreaController.winner === undefined
-              ? 'Game ended in a tie'
-              : ourPlayerHasWon
-              ? 'You won!'
-              : 'You lost :('
-          }`,
-        });
-      }
+      endGameToast({
+        description: `${
+          gameAreaController.winner === undefined
+            ? 'Game ended in a tie'
+            : gameAreaController.winner.id === townController.ourPlayer.id
+            ? 'You won!'
+            : 'You lost :('
+        }`,
+      });
     };
     const updater = () => {
       setV({
@@ -103,6 +102,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
         history: gameAreaController.history,
         x: gameAreaController.x,
         o: gameAreaController.o,
+        isPlayer: gameAreaController.isPlayer,
       });
     };
 
@@ -113,7 +113,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       gameAreaController.removeListener('gameUpdated', updater);
       gameAreaController.removeListener('gameEnd', showToast);
     };
-  }, [gameAreaController, endGameToast]);
+  }, [gameAreaController, endGameToast, townController]);
 
   // TODO - implement this component
   return (
@@ -137,8 +137,19 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
             }`
           : ` Game ${v.status === 'WAITING_TO_START' ? 'not yet started' : 'over'}`}
       </Text>
-      {v.status !== 'IN_PROGRESS' ? (
-        <Button onClick={async () => gameAreaController.joinGame()}>Join New Game</Button>
+      {v.status !== 'IN_PROGRESS' && !v.isPlayer ? (
+        <Button
+          isLoading={isLoading}
+          disabled={isLoading}
+          onClick={async () => {
+            setIsLoading(true);
+            gameAreaController.joinGame().then(
+              () => setIsLoading(false),
+              () => showErrorJoinToast(),
+            );
+          }}>
+          Join New Game
+        </Button>
       ) : (
         <></>
       )}

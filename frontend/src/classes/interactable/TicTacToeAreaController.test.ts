@@ -3,7 +3,6 @@ import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
 import {
   GameArea,
-  GameMoveCommand,
   GameResult,
   GameStatus,
   InteractableCommand,
