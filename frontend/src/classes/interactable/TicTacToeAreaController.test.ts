@@ -92,7 +92,7 @@ describe('[T1] TicTacToeAreaController', () => {
       });
       mockTownController.sendInteractableCommand.mockImplementationOnce(
         (s: InteractableID, c: InteractableCommand) => {
-          return new Promise((resolve, reject) => resolve({ gameID: id, something: s, else: c }));
+          return new Promise(resolve => resolve({ gameID: id, something: s, else: c }));
         },
       );
     }

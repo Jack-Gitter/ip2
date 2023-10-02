@@ -81,6 +81,18 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
   // then in the updater just do setModel({...gameAreaController.tomodel()})?
 
   const endGameToast = useToast();
+  const showToast = () => {
+    endGameToast({
+      title: 'Game over',
+      description: `${
+        gameAreaController.winner === undefined
+          ? 'tie'
+          : gameAreaController.isOurTurn
+          ? 'you lose'
+          : 'you win'
+      }`,
+    });
+  };
   useEffect(() => {
     /*const updater = () => {
       setObservers(gameAreaController.observers);
@@ -105,12 +117,6 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
         o: gameAreaController.o,
       });
     };
-    const showToast = () => {
-      endGameToast({
-        title: 'Game over',
-        description: `${v.winner === undefined ? 'tie' : v.isOurTurn ? 'you lose' : 'you win'}`,
-      });
-    };
     //const updater = () => {
     // setController(gameAreaController);
     //};
@@ -127,7 +133,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       gameAreaController.removeListener('gameUpdated', updater);
       gameAreaController.removeListener('gameEnd', showToast);
     };
-  }, [gameAreaController]);
+  }, [showToast, gameAreaController]);
 
   // TODO - implement this component
   return (
