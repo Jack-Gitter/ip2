@@ -575,15 +575,18 @@ describe('[T2] TicTacToeArea', () => {
       });
 
       it('Displays a message "Game in progress, {numMoves} moves in" and indicates whose turn it is when it is our turn', () => {
+        gameAreaController.mockIsOurTurn = true;
         renderTicTacToeArea();
         expect(
           screen.getByText(`Game in progress, 2 moves in, currently your turn`, { exact: false }),
         ).toBeInTheDocument();
+        jest.clearAllMocks();
       });
 
       it('Displays a message "Game in progress, {numMoves} moves in" and indicates whose turn it is when it is the other player\'s turn', () => {
         gameAreaController.mockMoveCount = 1;
         gameAreaController.mockWhoseTurn = gameAreaController.mockO;
+        gameAreaController.mockIsOurTurn = false;
         renderTicTacToeArea();
         expect(
           screen.getByText(
@@ -608,11 +611,17 @@ describe('[T2] TicTacToeArea', () => {
         ).toBeInTheDocument();
       });
       it('Updates the whose turn it is when the game is updated', () => {
+        jest.spyOn(gameAreaController, 'isOurTurn', 'get').mockImplementation(() => {
+          return true;
+        });
         renderTicTacToeArea();
         expect(screen.getByText(`, currently your turn`, { exact: false })).toBeInTheDocument();
         act(() => {
           gameAreaController.mockMoveCount = 3;
           gameAreaController.mockWhoseTurn = gameAreaController.mockO;
+          jest.spyOn(gameAreaController, 'isOurTurn', 'get').mockImplementation(() => {
+            return false;
+          });
           gameAreaController.emit('gameUpdated');
         });
         expect(

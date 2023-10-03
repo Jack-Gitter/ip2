@@ -1,4 +1,5 @@
-import React from 'react';
+import { Table, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
 import { GameResult } from '../../../types/CoveyTownSocket';
 
 /**
@@ -15,6 +16,31 @@ import { GameResult } from '../../../types/CoveyTownSocket';
  * @returns
  */
 export default function Leaderboard({ results }: { results: GameResult[] }): JSX.Element {
-  //TODO - implement this component (delete what's here first)
-  return <>{results.length} results</>;
+  // for each player, I need to make a function to run through results, get the number of total games played, number of wins, and losses
+  const players: Set<string> = new Set();
+  useEffect(() => {
+    results.map(result => {
+      for (const [key] of Object.entries(result.scores)) {
+        players.add(key);
+      }
+    });
+  });
+
+  return (
+    <>
+      <TableContainer>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>Player</Th>
+              <Th>Wins</Th>
+              <Th>Losses</Th>
+              <Th>Ties</Th>
+            </Tr>
+          </Thead>
+          <Tbody></Tbody>
+        </Table>
+      </TableContainer>
+    </>
+  );
 }
