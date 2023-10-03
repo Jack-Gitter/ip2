@@ -1,7 +1,6 @@
 import { Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import TicTacToeAreaController from '../../../../classes/interactable/TicTacToeAreaController';
-import useTownController from '../../../../hooks/useTownController';
 
 export type TicTacToeGameProps = {
   gameAreaController: TicTacToeAreaController;
@@ -57,14 +56,14 @@ const StyledTicTacToeBoard = chakra(Container, {
 export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProps): JSX.Element {
   const [board, setBoard] = useState(gameAreaController.board);
   const [ourTurn, setOurTurn] = useState(gameAreaController.isOurTurn);
-  const badMoveToast = useToast();
+  //const badMoveToast = useToast();
 
-  const showBadMoveToast = () => {
+  /*const showBadMoveToast = () => {
     badMoveToast({
       description: `Error: Invalid Move ${gameAreaController.whoseTurn?.userName}`,
       status: 'error',
     });
-  };
+  };*/
   useEffect(() => {
     const updater = () => {
       setBoard(gameAreaController.board);
