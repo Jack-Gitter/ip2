@@ -157,10 +157,10 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
           disabled={isLoading}
           onClick={async () => {
             setIsLoading(true);
-            gameAreaController.joinGame().then(
-              () => setIsLoading(false),
-              e => showErrorJoinToast(e.message),
-            );
+            gameAreaController
+              .joinGame()
+              .then(() => setIsLoading(false))
+              .catch(e => showErrorJoinToast(e.message));
           }}>
           Join New Game
         </Button>

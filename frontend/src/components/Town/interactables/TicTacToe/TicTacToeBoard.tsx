@@ -56,14 +56,14 @@ const StyledTicTacToeBoard = chakra(Container, {
 export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProps): JSX.Element {
   const [board, setBoard] = useState(gameAreaController.board);
   const [ourTurn, setOurTurn] = useState(gameAreaController.isOurTurn);
-  //const badMoveToast = useToast();
+  const badMoveToast = useToast();
 
-  /*const showBadMoveToast = () => {
+  const showBadMoveToast = () => {
     badMoveToast({
       description: `Error: Invalid Move ${gameAreaController.whoseTurn?.userName}`,
       status: 'error',
     });
-  };*/
+  };
   useEffect(() => {
     const updater = () => {
       setBoard(gameAreaController.board);
@@ -99,13 +99,13 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
       </StyledTicTacToeSquare>
       <StyledTicTacToeSquare
         disabled={!ourTurn}
-        /*onClick={async () =>
-          gameAreaController.makeMove(0, 1).then(
-            () => {},
-            e => showBadMoveToast,
-          )
-        }*/
-        onClick={async () => gameAreaController.makeMove(0, 1)}
+        onClick={async () =>
+          gameAreaController
+            .makeMove(0, 1)
+            .then()
+            .catch(() => showBadMoveToast())
+        }
+        //onClick={async () => gameAreaController.makeMove(0, 1)}
         aria-label='Cell 0,1'>
         {board[0][1]}
       </StyledTicTacToeSquare>
