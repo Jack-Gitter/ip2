@@ -61,7 +61,7 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
 
   const showBadMoveToast = () => {
     badMoveToast({
-      description: `Error: Invalid Move Someone`,
+      description: `Error: Invalid Move ${gameAreaController.whoseTurn?.userName}`,
       status: 'error',
     });
   };
@@ -82,98 +82,115 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
       gameAreaController.removeListener('turnChanged', changeTurn);
       gameAreaController.removeListener('gameUpdated', changeTurn);
     };
-
   }, [gameAreaController]);
 
   return (
     <StyledTicTacToeBoard aria-label='Tic-Tac-Toe Board'>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(0, 0).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(0, 0)}
         aria-label='Cell 0,0'>
         {board[0][0]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(0, 1).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(0, 1)}
         aria-label='Cell 0,1'>
         {board[0][1]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(0, 2).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(0, 2)}
         aria-label='Cell 0,2'>
         {board[0][2]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(1, 0).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(1, 0)}
         aria-label='Cell 1,0'>
         {board[1][0]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(1, 1).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(1, 1)}
         aria-label='Cell 1,1'>
         {board[1][1]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(1, 2).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(1, 2)}
         aria-label='Cell 1,2'>
         {board[1][2]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(2, 0).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(2, 0)}
         aria-label='Cell 2,0'>
         {board[2][0]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(2, 1).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(2, 1)}
         aria-label='Cell 2,1'>
         {board[2][1]}
       </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare disabled={!ourTurn}
-        onClick={async () =>
+      <StyledTicTacToeSquare
+        disabled={!ourTurn}
+        /*onClick={async () =>
           gameAreaController.makeMove(2, 2).then(
             () => {},
             e => showBadMoveToast,
           )
-        }
+        }*/
+        onClick={async () => gameAreaController.makeMove(2, 2)}
         aria-label='Cell 2,2'>
         {board[2][2]}
       </StyledTicTacToeSquare>
