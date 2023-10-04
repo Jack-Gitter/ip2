@@ -16,33 +16,51 @@ import { GameResult } from '../../../types/CoveyTownSocket';
  * @returns
  */
 export default function Leaderboard({ results }: { results: GameResult[] }): JSX.Element {
-  //type gameResult = 'WIN' | 'LOSS' | 'TIE';
-  const playerResults: Map<string, [number, number, number]> = new Map();
-  results.map(result => {
-    const scores = Object.entries(result.scores);
-    let p1Win = false;
-    let p1Lose = false;
-    const player1Username = scores[0][0];
-    const player2Username = scores[1][0];
+  type GameEndStatus = 'WIN' | 'LOSS' | 'TIE';
+
+  function getGameEndResult(scores: [string, number][]): GameEndStatus {
     if (scores[0][1] !== scores[1][1]) {
       if (scores[0][1]) {
-        p1Win = true;
+        return 'WIN';
       } else {
-        p1Lose = true;
+        return 'LOSS';
       }
     }
-    const tup1 = playerResults.get(player1Username) ?? [0, 0, 0];
-    const tup2 = playerResults.get(player2Username) ?? [0, 0, 0];
-    if (p1Win) {
-      tup1[0] += 1;
-      tup2[1] += 1;
-    } else if (p1Lose) {
-      tup1[1] += 1;
-      tup2[0] += 1;
+    return 'TIE';
+  }
+  const playerResults: Map<string, [number, number, number]> = new Map();
+
+  function calculatePlayerRecordTuple(
+    playerUsername: string,
+    gameResult: GameEndStatus,
+    isPlayerTwo: boolean,
+  ): [number, number, number] {
+    const tup = playerResults.get(playerUsername) ?? [0, 0, 0];
+    if (gameResult === 'WIN') {
+      if (!isPlayerTwo) {
+        tup[0] += 1;
+      } else {
+        tup[1] += 1;
+      }
+    } else if (gameResult === 'LOSS') {
+      if (!isPlayerTwo) {
+        tup[1] += 1;
+      } else {
+        tup[0] += 1;
+      }
     } else {
-      tup1[2] += 1;
-      tup2[2] += 1;
+      tup[2] += 1;
     }
+    return tup;
+  }
+
+  results.map(result => {
+    const scores = Object.entries(result.scores);
+    const gameEndResult = getGameEndResult(scores);
+    const player1Username = scores[0][0];
+    const player2Username = scores[1][0];
+    const tup1 = calculatePlayerRecordTuple(player1Username, gameEndResult, false);
+    const tup2 = calculatePlayerRecordTuple(player2Username, gameEndResult, true);
     playerResults.set(player1Username, tup1);
     playerResults.set(player2Username, tup2);
   });
