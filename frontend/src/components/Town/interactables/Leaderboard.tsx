@@ -16,9 +16,23 @@ import { GameResult } from '../../../types/CoveyTownSocket';
  * @returns
  */
 export default function Leaderboard({ results }: { results: GameResult[] }): JSX.Element {
+  /**
+   * type to represent if player1 has won, lost, or tied the game
+   */
   type GameEndStatus = 'WIN' | 'LOSS' | 'TIE';
 
-  function getGameEndResult(scores: [string, number][]): GameEndStatus {
+  // Map from playername to tuple, in the form of [wins, losses, ties]
+  const playerResults: Map<string, [number, number, number]> = new Map();
+
+  // An array representation of the above, for sorting purposes
+  let playerResultsArray: [string, [number, number, number]][];
+
+  /**
+   * Converts the win or loss of a player from a 1 and a 0 to a GameEndStatus type
+   * @param scores the object which represents if a player has won or lost the game
+   * @returns a GameEndStatus indicating if player1 has won
+   */
+  function getGameEndStatusForPlayerOne(scores: [string, number][]): GameEndStatus {
     if (scores[0][1] !== scores[1][1]) {
       if (scores[0][1]) {
         return 'WIN';
@@ -28,22 +42,28 @@ export default function Leaderboard({ results }: { results: GameResult[] }): JSX
     }
     return 'TIE';
   }
-  const playerResults: Map<string, [number, number, number]> = new Map();
 
+  /**
+   * Calculates the wins, losses, and ties for any player in the results array
+   * @param playerUsername  the player's username
+   * @param gameEndStatusForPlayerOne 'WIN' if player1 has won, 'LOSS' if they lost, 'TIE' if the game was a tie
+   * @param isPlayerOne if we are player1, true else false
+   * @returns the tuple of the players record, in the form of [wins, losses, ties]
+   */
   function calculatePlayerRecordTuple(
     playerUsername: string,
-    gameResult: GameEndStatus,
-    isPlayerTwo: boolean,
+    gameEndStatusForPlayerOne: GameEndStatus,
+    isPlayerOne: boolean,
   ): [number, number, number] {
     const tup = playerResults.get(playerUsername) ?? [0, 0, 0];
-    if (gameResult === 'WIN') {
-      if (!isPlayerTwo) {
+    if (gameEndStatusForPlayerOne === 'WIN') {
+      if (isPlayerOne) {
         tup[0] += 1;
       } else {
         tup[1] += 1;
       }
-    } else if (gameResult === 'LOSS') {
-      if (!isPlayerTwo) {
+    } else if (gameEndStatusForPlayerOne === 'LOSS') {
+      if (isPlayerOne) {
         tup[1] += 1;
       } else {
         tup[0] += 1;
@@ -56,15 +76,16 @@ export default function Leaderboard({ results }: { results: GameResult[] }): JSX
 
   results.map(result => {
     const scores = Object.entries(result.scores);
-    const gameEndResult = getGameEndResult(scores);
+    const gameEndStatusForPlayerOne = getGameEndStatusForPlayerOne(scores);
     const player1Username = scores[0][0];
     const player2Username = scores[1][0];
-    const tup1 = calculatePlayerRecordTuple(player1Username, gameEndResult, false);
-    const tup2 = calculatePlayerRecordTuple(player2Username, gameEndResult, true);
+    const tup1 = calculatePlayerRecordTuple(player1Username, gameEndStatusForPlayerOne, true);
+    const tup2 = calculatePlayerRecordTuple(player2Username, gameEndStatusForPlayerOne, false);
     playerResults.set(player1Username, tup1);
     playerResults.set(player2Username, tup2);
   });
-  let playerResultsArray = Array.from(playerResults);
+
+  playerResultsArray = Array.from(playerResults);
   playerResultsArray = playerResultsArray.sort((r1, r2) => r2[1][0] - r1[1][0]);
 
   return (

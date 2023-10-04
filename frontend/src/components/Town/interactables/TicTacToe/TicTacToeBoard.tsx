@@ -58,16 +58,27 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
   const [ourTurn, setOurTurn] = useState(gameAreaController.isOurTurn);
   const badMoveToast = useToast();
 
+  /**
+   * displays a toast with an error message if the player makes a move that is not succesfful
+   * @param e the Error thrown by makeMove()
+   */
   const showBadMoveToast = (e: Error) => {
     badMoveToast({
       status: 'error',
       description: `Error: ${e.message}`,
     });
   };
+
   useEffect(() => {
+    /**
+     * sets the state vairable board to the gameAreaController representation
+     */
     const changeBoard = () => {
       setBoard(gameAreaController.board);
     };
+    /**
+     * Sets the turn state variable to the gameAreaController representation
+     */
     const changeTurn = () => {
       setOurTurn(gameAreaController.isOurTurn);
     };
