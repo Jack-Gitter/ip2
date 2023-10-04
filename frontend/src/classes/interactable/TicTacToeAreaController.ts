@@ -268,7 +268,7 @@ export default class TicTacToeAreaController extends GameAreaController<
       this.emit('boardChanged', newBoard);
     }
 
-    // if the length of the board has actually changed an odd number of times then turn has changed
+    // if the length of the board has actually changed an odd number of times then turn changed
     if (oldMoves.length % 2 !== newMoves.length % 2) {
       this.emit('turnChanged', ourTurn);
     }
