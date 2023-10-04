@@ -35,21 +35,21 @@ export default class TicTacToeAreaController extends GameAreaController<
    * and board[2][2] is the bottom-right cell
    */
   get board(): TicTacToeCell[][] {
-    const ret: TicTacToeCell[][] = [
+    const twoDimensionalBoard: TicTacToeCell[][] = [
       [undefined, undefined, undefined],
       [undefined, undefined, undefined],
       [undefined, undefined, undefined],
     ];
     const currentGame = this._model.game;
     if (currentGame !== undefined) {
-      const currentBoard: ReadonlyArray<TicTacToeMove> | undefined = currentGame.state.moves;
-      if (currentBoard !== undefined) {
-        for (const move of currentBoard) {
-          ret[move.row][move.col] = move.gamePiece;
+      const oneDimensionalBoard: ReadonlyArray<TicTacToeMove> | undefined = currentGame.state.moves;
+      if (oneDimensionalBoard !== undefined) {
+        for (const move of oneDimensionalBoard) {
+          twoDimensionalBoard[move.row][move.col] = move.gamePiece;
         }
       }
     }
-    return ret;
+    return twoDimensionalBoard;
   }
 
   /**
@@ -225,6 +225,7 @@ export default class TicTacToeAreaController extends GameAreaController<
     const currentBoard = this.board;
     const oldMoves: TicTacToeMove[] = [];
 
+    // compile the old model's moves in to a move array
     if (this._model.game !== undefined) {
       for (const move of this._model.game.state.moves) {
         oldMoves.push(move);
@@ -234,6 +235,7 @@ export default class TicTacToeAreaController extends GameAreaController<
     super._updateFrom(newModel);
     const newBoard = this.board;
 
+    // check if the old board and new board are different, if they are board has changed
     for (let i = 0; i < currentBoard.length; i++) {
       for (let j = 0; j < currentBoard.length; j++) {
         if (currentBoard[i][j] !== newBoard[i][j]) {
@@ -244,6 +246,7 @@ export default class TicTacToeAreaController extends GameAreaController<
 
     let ourTurn = false;
     const newMoves: TicTacToeMove[] = [];
+
     if (newModel.game !== undefined) {
       for (const move of newModel.game.state.moves) {
         newMoves.push(move);
@@ -251,6 +254,7 @@ export default class TicTacToeAreaController extends GameAreaController<
     }
 
     const ourPlayer = this._townController.ourPlayer;
+    // if the last move was of the other player than it is our turn
     if (
       this._model.game !== undefined &&
       newMoves.length > 0 &&
@@ -264,6 +268,7 @@ export default class TicTacToeAreaController extends GameAreaController<
       this.emit('boardChanged', newBoard);
     }
 
+    // if the length of the board has actually changed an odd number of times then turn has changed
     if (oldMoves.length % 2 !== newMoves.length % 2) {
       this.emit('turnChanged', ourTurn);
     }
@@ -289,7 +294,7 @@ export default class TicTacToeAreaController extends GameAreaController<
       throw new Error(NO_GAME_IN_PROGRESS_ERROR);
     }
 
-    // have checked that game status is in progress, so whoseTurn is never undefined
+    // have checked that game status is in progress, so whoseTurn and this.x are never undefined
     const gamePiece = this.whoseTurn?.id === this.x?.id ? 'X' : 'O';
     const move: TicTacToeMove = {
       gamePiece: gamePiece,

@@ -1,5 +1,5 @@
-import { Table, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import React from 'react';
 import { GameResult } from '../../../types/CoveyTownSocket';
 
 /**
@@ -18,34 +18,36 @@ import { GameResult } from '../../../types/CoveyTownSocket';
 export default function Leaderboard({ results }: { results: GameResult[] }): JSX.Element {
   // if both values are zero, add a tie -- we are evaluating these wins, losses, and ties on the fly in the html, not storing them in a data structure
   const playerResults: Map<string, [number, number, number]> = new Map();
-  useEffect(() => {
-    results.map(result => {
-      const scores = Object.entries(result.scores);
-      let p1Win = false;
-      let p1Lose = false;
-      let p1Tie = false;
-      const player1Username = scores[0][0];
-      const player2Username = scores[1][0];
-      if (scores[0][1] === scores[1][1]) {
-        p1Tie = true;
-      } else if (scores[0][1]) {
+  results.map(result => {
+    const scores = Object.entries(result.scores);
+    let p1Win = false;
+    let p1Lose = false;
+    const player1Username = scores[0][0];
+    const player2Username = scores[1][0];
+    if (scores[0][1] !== scores[1][1]) {
+      if (scores[0][1]) {
         p1Win = true;
       } else {
         p1Lose = true;
       }
-      if (!(player1Username in playerResults)) {
-        playerResults.set(player1Username, [0, 0, 0]);
-      }
-      const tup = playerResults.get(player1Username);
-      if (p1Win) {
-        tup[0] += 1;
-      } else if (p1Lose) {
-        tup[1] += 1;
-      } else {
-        tup[2] += 1;
-      }
-    });
+    }
+    const tup1 = playerResults.get(player1Username) ?? [0, 0, 0];
+    const tup2 = playerResults.get(player2Username) ?? [0, 0, 0];
+    if (p1Win) {
+      tup1[0] += 1;
+      tup2[1] += 1;
+    } else if (p1Lose) {
+      tup1[1] += 1;
+      tup2[0] += 1;
+    } else {
+      tup1[2] += 1;
+      tup2[2] += 1;
+    }
+    playerResults.set(player1Username, tup1);
+    playerResults.set(player2Username, tup2);
   });
+  let playerResultsArray = Array.from(playerResults);
+  playerResultsArray = playerResultsArray.sort((r1, r2) => r2[1][0] - r1[1][0]);
 
   return (
     <>
@@ -59,7 +61,16 @@ export default function Leaderboard({ results }: { results: GameResult[] }): JSX
               <Th>Ties</Th>
             </Tr>
           </Thead>
-          <Tbody></Tbody>
+          <Tbody>
+            {playerResultsArray.map((result, key) => (
+              <Tr key={key}>
+                <Td>{result[0]}</Td>
+                <Td>{result[1][0]}</Td>
+                <Td>{result[1][1]}</Td>
+                <Td>{result[1][2]}</Td>
+              </Tr>
+            ))}
+          </Tbody>
         </Table>
       </TableContainer>
     </>
