@@ -99,7 +99,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
   };
 
   useEffect(() => {
-    const showToast = () => {
+    const displayEndGameToast = () => {
       endGameToast({
         description: `${
           gameAreaController.winner === undefined
@@ -110,7 +110,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
         }`,
       });
     };
-    const updater = () => {
+    const updateGameAreaValuesOnGameUpdatedEmitted = () => {
       setGameAreaValues({
         players: gameAreaController.players,
         observers: gameAreaController.observers,
@@ -126,12 +126,12 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
       });
     };
 
-    gameAreaController.addListener('gameUpdated', updater);
-    gameAreaController.addListener('gameEnd', showToast);
+    gameAreaController.addListener('gameUpdated', updateGameAreaValuesOnGameUpdatedEmitted);
+    gameAreaController.addListener('gameEnd', displayEndGameToast);
 
     return () => {
-      gameAreaController.removeListener('gameUpdated', updater);
-      gameAreaController.removeListener('gameEnd', showToast);
+      gameAreaController.removeListener('gameUpdated', updateGameAreaValuesOnGameUpdatedEmitted);
+      gameAreaController.removeListener('gameEnd', displayEndGameToast);
     };
   }, [gameAreaController, endGameToast, townController]);
 
