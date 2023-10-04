@@ -1,6 +1,7 @@
 import { Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import TicTacToeAreaController from '../../../../classes/interactable/TicTacToeAreaController';
+import { TicTacToeGridPosition } from '../../../../types/CoveyTownSocket';
 
 export type TicTacToeGameProps = {
   gameAreaController: TicTacToeAreaController;
@@ -57,6 +58,17 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
   const [board, setBoard] = useState(gameAreaController.board);
   const [ourTurn, setOurTurn] = useState(gameAreaController.isOurTurn);
   const badMoveToast = useToast();
+  const [arr] = useState<TicTacToeGridPosition[][]>([
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 0],
+    [1, 1],
+    [1, 2],
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ]);
 
   /**
    * displays a toast with an error message if the player makes a move that is not succesfful
@@ -85,140 +97,32 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
 
     gameAreaController.addListener('boardChanged', changeBoard);
     gameAreaController.addListener('gameUpdated', changeTurn);
+    gameAreaController.addListener('turnChanged', changeTurn);
     return () => {
       gameAreaController.removeListener('gameUpdated', changeTurn);
+      gameAreaController.removeListener('turnChanged', changeTurn);
       gameAreaController.removeListener('boardChanged', changeBoard);
     };
   }, [gameAreaController]);
-
   return (
     <StyledTicTacToeBoard aria-label='Tic-Tac-Toe Board'>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(0, 0);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
+      {arr.map((indexes, key) => (
+        <StyledTicTacToeSquare
+          key={key}
+          disabled={!ourTurn}
+          onClick={async () => {
+            try {
+              await gameAreaController.makeMove(indexes[0], indexes[1]);
+            } catch (e) {
+              if (e instanceof Error) {
+                showBadMoveToast(e);
+              }
             }
-          }
-        }}
-        aria-label='Cell 0,0'>
-        {board[0][0]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(0, 1);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 0,1'>
-        {board[0][1]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(0, 2);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 0,2'>
-        {board[0][2]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(1, 0);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 1,0'>
-        {board[1][0]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(1, 1);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 1,1'>
-        {board[1][1]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(1, 2);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 1,2'>
-        {board[1][2]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(2, 0);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 2,0'>
-        {board[2][0]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(2, 1);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 2,1'>
-        {board[2][1]}
-      </StyledTicTacToeSquare>
-      <StyledTicTacToeSquare
-        disabled={!ourTurn}
-        onClick={async () => {
-          try {
-            await gameAreaController.makeMove(2, 2);
-          } catch (e) {
-            if (e instanceof Error) {
-              showBadMoveToast(e);
-            }
-          }
-        }}
-        aria-label='Cell 2,2'>
-        {board[2][2]}
-      </StyledTicTacToeSquare>
+          }}
+          aria-label={`Cell ${indexes[0]},${indexes[1]}`}>
+          {board[indexes[0]][indexes[1]]}
+        </StyledTicTacToeSquare>
+      ))}
     </StyledTicTacToeBoard>
   );
 }
