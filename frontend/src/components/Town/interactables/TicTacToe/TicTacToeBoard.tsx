@@ -65,18 +65,18 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
     });
   };
   useEffect(() => {
-    const changeBoard = () => {
+    const updateBoard = () => {
       setBoard(gameAreaController.board);
     };
     const changeTurn = () => {
       setOurTurn(gameAreaController.isOurTurn);
     };
 
-    gameAreaController.addListener('boardChanged', changeBoard);
-    gameAreaController.addListener('turnChanged', changeTurn);
+    gameAreaController.addListener('boardChanged', updateBoard);
+    gameAreaController.addListener('gameUpdated', changeTurn);
     return () => {
-      gameAreaController.removeListener('boardChanged', changeBoard);
-      gameAreaController.removeListener('turnChanged', changeTurn);
+      gameAreaController.removeListener('gameUpdated', changeTurn);
+      gameAreaController.removeListener('boardChanged', updateBoard);
     };
   }, [gameAreaController]);
 

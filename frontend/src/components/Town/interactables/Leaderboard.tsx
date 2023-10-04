@@ -16,7 +16,7 @@ import { GameResult } from '../../../types/CoveyTownSocket';
  * @returns
  */
 export default function Leaderboard({ results }: { results: GameResult[] }): JSX.Element {
-  // if both values are zero, add a tie -- we are evaluating these wins, losses, and ties on the fly in the html, not storing them in a data structure
+  //type gameResult = 'WIN' | 'LOSS' | 'TIE';
   const playerResults: Map<string, [number, number, number]> = new Map();
   results.map(result => {
     const scores = Object.entries(result.scores);
