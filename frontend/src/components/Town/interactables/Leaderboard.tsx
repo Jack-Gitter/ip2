@@ -16,12 +16,33 @@ import { GameResult } from '../../../types/CoveyTownSocket';
  * @returns
  */
 export default function Leaderboard({ results }: { results: GameResult[] }): JSX.Element {
-  // for each player, I need to make a function to run through results, get the number of total games played, number of wins, and losses
-  const players: Set<string> = new Set();
+  // if both values are zero, add a tie -- we are evaluating these wins, losses, and ties on the fly in the html, not storing them in a data structure
+  const playerResults: Map<string, [number, number, number]> = new Map();
   useEffect(() => {
     results.map(result => {
-      for (const [key] of Object.entries(result.scores)) {
-        players.add(key);
+      const scores = Object.entries(result.scores);
+      let p1Win = false;
+      let p1Lose = false;
+      let p1Tie = false;
+      const player1Username = scores[0][0];
+      const player2Username = scores[1][0];
+      if (scores[0][1] === scores[1][1]) {
+        p1Tie = true;
+      } else if (scores[0][1]) {
+        p1Win = true;
+      } else {
+        p1Lose = true;
+      }
+      if (!(player1Username in playerResults)) {
+        playerResults.set(player1Username, [0, 0, 0]);
+      }
+      const tup = playerResults.get(player1Username);
+      if (p1Win) {
+        tup[0] += 1;
+      } else if (p1Lose) {
+        tup[1] += 1;
+      } else {
+        tup[2] += 1;
       }
     });
   });
